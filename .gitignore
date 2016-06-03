@@ -1,0 +1,7 @@
+build/
+*.pyc
+*.so
+*.egg-info
+*.so.dSYM
+_glmnetmodule.c
+dist

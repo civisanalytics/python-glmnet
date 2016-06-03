@@ -1,0 +1,9 @@
+build/
+*.pyc
+*.so
+*.egg-info
+*.so.dSYM
+_glmnetmodule.c
+.git
+.gitignore
+circle.yml
