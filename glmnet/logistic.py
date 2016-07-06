@@ -218,9 +218,14 @@ class LogitNet(BaseEstimator):
 
         check_classification_targets(y)
         self.classes_ = np.unique(y)  # the output of np.unique is sorted
+        n_classes = len(self.classes_)
+        if n_classes < 2:
+            raise ValueError("Training data need to contain at least 2 "
+                             "classes.")
+
         # glmnet requires the labels a one-hot-encoded array of
         # (n_samples, n_classes)
-        if len(self.classes_) == 2:
+        if n_classes == 2:
             # Normally we use 1/0 for the positive and negative classes. Since
             # np.unique sorts the output, the negative class will be in the 0th
             # column. We want a model predicting the positive class, not the
@@ -239,7 +244,7 @@ class LogitNet(BaseEstimator):
 
         # we need some sort of "offset" array for glmnet
         # an array of shape (n_examples, n_classes)
-        offset = np.zeros((X.shape[0], len(self.classes_)), dtype=np.float64,
+        offset = np.zeros((X.shape[0], n_classes), dtype=np.float64,
                           order='F')
 
         # You should have thought of that before you got here.
@@ -263,7 +268,6 @@ class LogitNet(BaseEstimator):
         # Note, this will be ignored when the user specifies lambda_path.
         max_features = X.shape[1] + 1
 
-        n_classes = len(self.classes_)
         if n_classes == 2:
             # binomial, tell glmnet there is only one class
             # otherwise we will get a coef matrix with two dimensions
