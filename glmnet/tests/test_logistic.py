@@ -162,6 +162,17 @@ class TestLogitNet(unittest.TestCase):
         with self.assertWarns(RuntimeWarning):
             m.predict(x, lamb=m.lambda_path_[-1] - 1)
 
+    def test_single_class_exception(self):
+        x, y = self.binomial[0]
+        y = np.ones_like(y)
+        m = LogitNet()
+
+        with self.assertRaises(ValueError) as e:
+            m.fit(x, y)
+
+        self.assertEqual("Training data need to contain at least 2 classes.",
+                         str(e.exception))
+
 
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)
