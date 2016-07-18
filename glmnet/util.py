@@ -64,7 +64,7 @@ def _score_lambda_path(est, X, y, sample_weight, cv, scoring, classifier,
         scores = Parallel(n_jobs=n_jobs, verbose=verbose, backend='threading')(
             delayed(_fit_and_score)(est, scorer, X, y, sample_weight,
                                     est.lambda_path_, train_idx, test_idx)
-            for (test_idx, train_idx) in cv)
+            for (train_idx, test_idx) in cv)
 
     return scores
 
