@@ -5,3 +5,4 @@ build/
 *.so.dSYM
 _glmnetmodule.c
 dist
+MANIFEST
