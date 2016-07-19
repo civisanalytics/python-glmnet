@@ -1,8 +1,12 @@
-import setuptools
 import sys
 import os
 
-from numpy.distutils.core import Extension
+try:
+    from numpy.distutils.core import Extension, setup
+except ImportError:
+    sys.exit("install requires: 'numpy'."
+             " use pip or easy_install."
+             " \n  $ pip install numpy")
 
 
 f_compile_args = ['-ffixed-form', '-fdefault-real-8']
@@ -47,14 +51,17 @@ glmnet_lib = Extension(name='_glmnet',
                        )
 
 if __name__ == "__main__":
-    from numpy.distutils.core import setup
+    import versioneer
 
     setup(name="glmnet",
-          version='0.1.0',
+          cmdclass=versioneer.get_cmdclass(),
+          version=versioneer.get_version(),
           description="Python wrapper for glmnet",
           long_description=read('README.md'),
           author="Bill Lattner",
           author_email="opensource@civisanalytics.com",
+          url="https://github.com/civisanalytics/python-glmnet",
+          install_requires=read('requirements.txt').splitlines(),
           ext_modules=[glmnet_lib],
           packages=['glmnet'],
           classifiers=[
