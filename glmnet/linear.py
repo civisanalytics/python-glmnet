@@ -219,11 +219,7 @@ class ElasticNet(BaseEstimator):
 
         exclude_vars = 0
 
-        try:
-            # numpy does not have a good way to check if a variable does not
-            # exist; so this try-except block is used
-            _ = relative_penalties.shape
-        except:
+        if relative_penalties is None:
             relative_penalties = np.ones(X.shape[1], dtype=np.float64,
                                          order='F')
 

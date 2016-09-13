@@ -257,14 +257,9 @@ class LogitNet(BaseEstimator):
         # about how important some vars are relative to others, see the glmnet
         # vignette:
         # http://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html
-        try:
-            # numpy does not have a good way to check if a variable does not
-            # exist; so this try-except block is used
-            _ = relative_penalties.shape
-        except:
+        if relative_penalties is None:
             relative_penalties = np.ones(X.shape[1], dtype=np.float64,
                                          order='F')
-
 
         coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')
         coef_bounds[0, :] = -np.inf
