@@ -165,6 +165,13 @@ class LogitNet(BaseEstimator):
         Y : array, shape (n_samples,)
             Target values
 
+        sample_weight : array, shape (n_samples,)
+            Optional weight vector for observations
+
+        relative_penalties: array, shape (n_features,)
+            Optional relative weight vector for penalty.
+            0 entries remove penalty.
+
         Returns
         -------
         self : object

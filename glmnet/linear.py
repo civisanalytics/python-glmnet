@@ -160,11 +160,20 @@ class ElasticNet(BaseEstimator):
         Y : array, shape (n_samples,)
             Target values
 
+        sample_weight : array, shape (n_samples,)
+            Optional weight vector for observations
+
+        relative_penalties: array, shape (n_features,)
+            Optional relative weight vector for penalty.
+            0 entries remove penalty.
+
         Returns
         -------
         self : object
             Returns self.
         """
+
+
         if self.alpha > 1 or self.alpha < 0:
             raise ValueError("alpha must be between 0 and 1")
 
