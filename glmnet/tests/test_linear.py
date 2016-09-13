@@ -66,15 +66,14 @@ class TestElasticNet(unittest.TestCase):
     def test_relative_penalties(self):
         m1 = ElasticNet(random_state=4328)
         m2 = ElasticNet(random_state=4328)
-        for h in self.inputs:
-            x, y = h
+        for x, y in self.inputs:
             p = x.shape[1]
 
             # m1 no relative penalties applied
             m1.fit(x, y)
 
             # find the nonzero indices from LASSO
-            nonzero = [ind for ind, z in enumerate(m1.coef_) if z != 0]
+            nonzero = np.nonzero(m1.coef_)
 
             # get their absolute values
             coef1abs = [np.abs(z) for z in m1.coef_]

@@ -92,6 +92,33 @@ class TestLogitNet(unittest.TestCase):
             m = m.fit(x, y)
             check_accuracy(y, m.predict(x), 0.85, alpha=alpha)
 
+    def test_relative_penalties(self):
+        x, y = self.binomial[0]
+        p = x.shape[1]
+
+        # m1 no relative penalties applied
+        m1 = LogitNet(alpha=1)
+        m1.fit(x, y)
+
+        # find the nonzero indices from LASSO
+        nonzero = np.nonzero(m1.coef_[0])
+
+        # get their absolute values
+        coef1abs = [np.abs(z) for z in m1.coef_[0]]
+
+        # unpenalize those nonzero coefs
+        penalty = np.repeat(1, p)
+        penalty[nonzero] = 0
+
+        # refit the model with the unpenalized coefs
+        m2 = LogitNet(alpha=1)
+        m2.fit(x, y, relative_penalties=penalty)
+
+        # verify that the unpenalized coef ests exceed the penalized ones
+        # in absolute value
+        coef2abs = [np.abs(z) for z in m2.coef_[0]]
+        assert(all([z1 <= z2 for z1, z2 in zip(coef1abs, coef2abs)]))
+
     def test_n_folds(self):
         x, y = self.binomial[0]
         for n in self.n_folds:
