@@ -14,7 +14,7 @@ from sklearn.externals.joblib import Parallel, delayed
 from .scorer import check_scoring
 
 
-def _score_lambda_path(est, X, y, sample_weight, cv, scoring, classifier,
+def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring, classifier,
                        n_jobs, verbose):
     """Score each model found by glmnet using cross validation.
 
@@ -62,14 +62,14 @@ def _score_lambda_path(est, X, y, sample_weight, cv, scoring, classifier,
         warnings.simplefilter(action, UndefinedMetricWarning)
 
         scores = Parallel(n_jobs=n_jobs, verbose=verbose, backend='threading')(
-            delayed(_fit_and_score)(est, scorer, X, y, sample_weight,
+            delayed(_fit_and_score)(est, scorer, X, y, sample_weight, relative_penalties,
                                     est.lambda_path_, train_idx, test_idx)
             for (train_idx, test_idx) in cv)
 
     return scores
 
 
-def _fit_and_score(est, scorer, X, y, sample_weight, score_lambda_path,
+def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties, score_lambda_path,
                    train_inx, test_inx):
     """Fit and score a single model.
 
@@ -107,7 +107,7 @@ def _fit_and_score(est, scorer, X, y, sample_weight, score_lambda_path,
         Scores for each value of lambda for a single cv fold.
     """
     m = clone(est)
-    m = m._fit(X[train_inx, :], y[train_inx], sample_weight[train_inx])
+    m = m._fit(X[train_inx, :], y[train_inx], sample_weight[train_inx], relative_penalties)
 
     lamb = np.clip(score_lambda_path, m.lambda_path_[-1], m.lambda_path_[0])
     return scorer(m, X[test_inx, :], y[test_inx], lamb=lamb)

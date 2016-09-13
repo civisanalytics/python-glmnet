@@ -137,7 +137,7 @@ class ElasticNet(BaseEstimator):
         self.random_state = random_state
         self.verbose = verbose
 
-    def fit(self, X, y, sample_weight=None):
+    def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_folds > 1 also run n-fold cross
         validation on all values in lambda_path.
 
@@ -175,12 +175,12 @@ class ElasticNet(BaseEstimator):
         if sample_weight is None:
             sample_weight = np.ones(X.shape[0])
 
-        self._fit(X, y, sample_weight)
+        self._fit(X, y, sample_weight, relative_penalties)
 
         if self.n_folds >= 3:
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           self.n_folds, self.scoring,
-                                           classifier=False,
+                                           relative_penalties, self.n_folds,
+                                           self.scoring, classifier=False,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 
@@ -204,7 +204,7 @@ class ElasticNet(BaseEstimator):
 
         return self
 
-    def _fit(self, X, y, sample_weight):
+    def _fit(self, X, y, sample_weight, relative_penalties):
 
         if self.lambda_path is not None:
             n_lambda = len(self.lambda_path)
@@ -219,7 +219,13 @@ class ElasticNet(BaseEstimator):
 
         exclude_vars = 0
 
-        relative_penalties = np.ones(X.shape[1], dtype=np.float64, order='F')
+        try:
+            # numpy does not have a good way to check if a variable does not
+            # exist; so this try-except block is used
+            _ = relative_penalties.shape
+        except:
+            relative_penalties = np.ones(X.shape[1], dtype=np.float64,
+                                         order='F')
 
         coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')
         coef_bounds[0, :] = -np.inf
