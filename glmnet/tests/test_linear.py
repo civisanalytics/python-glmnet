@@ -75,9 +75,6 @@ class TestElasticNet(unittest.TestCase):
             # find the nonzero indices from LASSO
             nonzero = np.nonzero(m1.coef_)
 
-            # get their absolute values
-            coef1abs = [np.abs(z) for z in m1.coef_]
-
             # unpenalize those nonzero coefs
             penalty = np.repeat(1, p)
             penalty[nonzero] = 0
@@ -87,8 +84,7 @@ class TestElasticNet(unittest.TestCase):
 
             # verify that the unpenalized coef ests exceed the penalized ones
             # in absolute value
-            coef2abs = [np.abs(z) for z in m2.coef_]
-            assert(all([z1 <= z2 for z1, z2 in zip(coef1abs, coef2abs)]))
+            assert(np.all(np.abs(m1.coef_) <= np.abs(m2.coef_)))            
 
     def test_alphas(self):
         x, y = self.inputs[0]
