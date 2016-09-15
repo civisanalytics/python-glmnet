@@ -63,6 +63,28 @@ class TestElasticNet(unittest.TestCase):
         m = m.fit(x, y)
         self.check_r2_score(y, m.predict(x), 0.90)
 
+    def test_relative_penalties(self):
+        m1 = ElasticNet(random_state=4328)
+        m2 = ElasticNet(random_state=4328)
+        for x, y in self.inputs:
+            p = x.shape[1]
+
+            # m1 no relative penalties applied
+            m1.fit(x, y)
+
+            # find the nonzero indices from LASSO
+            nonzero = np.nonzero(m1.coef_)
+
+            # unpenalize those nonzero coefs
+            penalty = np.repeat(1, p)
+            penalty[nonzero] = 0
+
+            # refit the model with the unpenalized coefs
+            m2.fit(x, y, relative_penalties=penalty)
+
+            # verify that the unpenalized coef ests exceed the penalized ones
+            # in absolute value
+            assert(np.all(np.abs(m1.coef_) <= np.abs(m2.coef_)))            
 
     def test_alphas(self):
         x, y = self.inputs[0]

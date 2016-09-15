@@ -137,7 +137,7 @@ class ElasticNet(BaseEstimator):
         self.random_state = random_state
         self.verbose = verbose
 
-    def fit(self, X, y, sample_weight=None):
+    def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_folds > 1 also run n-fold cross
         validation on all values in lambda_path.
 
@@ -160,11 +160,20 @@ class ElasticNet(BaseEstimator):
         Y : array, shape (n_samples,)
             Target values
 
+        sample_weight : array, shape (n_samples,)
+            Optional weight vector for observations
+
+        relative_penalties: array, shape (n_features,)
+            Optional relative weight vector for penalty.
+            0 entries remove penalty.
+
         Returns
         -------
         self : object
             Returns self.
         """
+
+
         if self.alpha > 1 or self.alpha < 0:
             raise ValueError("alpha must be between 0 and 1")
 
@@ -175,12 +184,12 @@ class ElasticNet(BaseEstimator):
         if sample_weight is None:
             sample_weight = np.ones(X.shape[0])
 
-        self._fit(X, y, sample_weight)
+        self._fit(X, y, sample_weight, relative_penalties)
 
         if self.n_folds >= 3:
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           self.n_folds, self.scoring,
-                                           classifier=False,
+                                           relative_penalties, self.n_folds,
+                                           self.scoring, classifier=False,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 
@@ -204,7 +213,7 @@ class ElasticNet(BaseEstimator):
 
         return self
 
-    def _fit(self, X, y, sample_weight):
+    def _fit(self, X, y, sample_weight, relative_penalties):
 
         if self.lambda_path is not None:
             n_lambda = len(self.lambda_path)
@@ -219,7 +228,9 @@ class ElasticNet(BaseEstimator):
 
         exclude_vars = 0
 
-        relative_penalties = np.ones(X.shape[1], dtype=np.float64, order='F')
+        if relative_penalties is None:
+            relative_penalties = np.ones(X.shape[1], dtype=np.float64,
+                                         order='F')
 
         coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')
         coef_bounds[0, :] = -np.inf

@@ -142,7 +142,7 @@ class LogitNet(BaseEstimator):
         self.random_state = random_state
         self.verbose = verbose
 
-    def fit(self, X, y, sample_weight=None):
+    def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_folds > 1 also run n-fold cross
         validation on all values in lambda_path.
 
@@ -165,6 +165,13 @@ class LogitNet(BaseEstimator):
         Y : array, shape (n_samples,)
             Target values
 
+        sample_weight : array, shape (n_samples,)
+            Optional weight vector for observations
+
+        relative_penalties: array, shape (n_features,)
+            Optional relative weight vector for penalty.
+            0 entries remove penalty.
+
         Returns
         -------
         self : object
@@ -178,14 +185,15 @@ class LogitNet(BaseEstimator):
             sample_weight = np.ones(X.shape[0])
 
         # fit the model
-        self._fit(X, y, sample_weight)
+        self._fit(X, y, sample_weight, relative_penalties)
 
         # score each model on the path of lambda values found by glmnet and
         # select the best scoring
         if self.n_folds >= 3:
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           self.n_folds, self.scoring,
-                                           classifier=True, n_jobs=self.n_jobs,
+                                           relative_penalties, self.n_folds,
+                                           self.scoring, classifier=True,
+                                           n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 
             self.cv_mean_score_ = np.atleast_1d(np.mean(cv_scores, axis=0))
@@ -208,7 +216,7 @@ class LogitNet(BaseEstimator):
 
         return self
 
-    def _fit(self, X, y, sample_weight=None):
+    def _fit(self, X, y, sample_weight=None, relative_penalties=None):
         if self.lambda_path is not None:
             n_lambda = len(self.lambda_path)
             min_lambda_ratio = 1.0
@@ -256,7 +264,9 @@ class LogitNet(BaseEstimator):
         # about how important some vars are relative to others, see the glmnet
         # vignette:
         # http://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html
-        relative_penalties = np.ones(X.shape[1], dtype=np.float64, order='F')
+        if relative_penalties is None:
+            relative_penalties = np.ones(X.shape[1], dtype=np.float64,
+                                         order='F')
 
         coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')
         coef_bounds[0, :] = -np.inf
