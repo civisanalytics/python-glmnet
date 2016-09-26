@@ -1,5 +1,6 @@
 import sys
 import os
+import io
 
 try:
     from numpy.distutils.core import Extension, setup
@@ -13,7 +14,7 @@ f_compile_args = ['-ffixed-form', '-fdefault-real-8']
 
 
 def read(fname):
-    with open(os.path.join(os.path.dirname(__file__), fname)) as _in:
+    with io.open(os.path.join(os.path.dirname(__file__),fname), encoding="utf-8") as _in:
         return _in.read()
 
 
