@@ -20,7 +20,7 @@ class TestElasticNetPandas(unittest.TestCase):
         df = pd.DataFrame(x)
         df['y'] = y
 
-        m = ElasticNet(n_folds=3, random_state=123)
+        m = ElasticNet(n_splits=3, random_state=123)
         m = m.fit(df.drop(['y'], axis=1), df.y)
         sanity_check_regression(m, x)
 
@@ -33,7 +33,7 @@ class TestLogitNetPandas(unittest.TestCase):
         df = pd.DataFrame(x)
         df['y'] = y
 
-        m = LogitNet(n_folds=3, random_state=123)
+        m = LogitNet(n_splits=3, random_state=123)
         m = m.fit(df.drop(['y'], axis=1), df.y)
         sanity_check_logistic(m, x)
 

@@ -32,7 +32,7 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring
     sample_weight : array, shape (n_samples,)
         Weight of each row in X.
 
-    n_folds : int
+    n_splits : int
         Number of folds for cross validation, must be at least 3.
 
     scoring : string, callable or None
