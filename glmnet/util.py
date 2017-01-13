@@ -8,7 +8,7 @@ from scipy.interpolate import interp1d
 from sklearn.base import clone
 # this will change to sklearn.exceptions in 0.18
 from sklearn.metrics.base import UndefinedMetricWarning
-from sklearn.cross_validation import check_cv
+from sklearn.model_selection import check_cv
 from sklearn.externals.joblib import Parallel, delayed
 
 from .scorer import check_scoring
@@ -32,7 +32,7 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring
     sample_weight : array, shape (n_samples,)
         Weight of each row in X.
 
-    n_folds : int
+    n_splits : int
         Number of folds for cross validation, must be at least 3.
 
     scoring : string, callable or None
@@ -44,13 +44,18 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring
     verbose : bool
         Emit logging data and warnings when True.
 
+    classifier : boolean, optional, default False
+        Whether the task is a classification task, in which case
+        stratified KFold will be used.
+
     Returns
     -------
     scores : array, shape (n_lambda,)
         Scores for each value of lambda over all cv folds.
     """
     scorer = check_scoring(est, scoring)
-    cv = check_cv(cv, X, y, classifier)
+    cv = check_cv(cv, y, classifier)
+    cv = cv.split(X, y)
 
     # We score the model for every value of lambda, for classification
     # models, this will be an intercept-only model, meaning it predicts

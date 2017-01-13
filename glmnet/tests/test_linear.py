@@ -30,7 +30,7 @@ class TestElasticNet(unittest.TestCase):
         self.inputs = [(x,y), (x_sparse, y), (x_wide, y_wide),
                        (x_wide_sparse, y_wide)]
         self.alphas = [0., 0.25, 0.50, 0.75, 1.]
-        self.n_folds = [-1, 0, 5]
+        self.n_splits = [-1, 0, 5]
         self.scoring = [
             "r2",
             "mean_squared_error",
@@ -93,13 +93,13 @@ class TestElasticNet(unittest.TestCase):
             m = m.fit(x, y)
             self.check_r2_score(y, m.predict(x), 0.90, alpha=alpha)
 
-    def test_n_folds(self):
+    def test_n_splits(self):
         x, y = self.inputs[0]
-        for n in self.n_folds:
-            m = ElasticNet(n_folds=n, random_state=6601)
+        for n in self.n_splits:
+            m = ElasticNet(n_splits=n, random_state=6601)
             if n > 0 and n < 3:
                 with self.assertRaisesRegexp(ValueError,
-                                             "n_folds must be at least 3"):
+                                             "n_splits must be at least 3"):
                     m = m.fit(x, y)
             else:
                 m = m.fit(x, y)
@@ -114,7 +114,7 @@ class TestElasticNet(unittest.TestCase):
 
     def test_predict_without_cv(self):
         x, y = self.inputs[0]
-        m = ElasticNet(n_folds=0, random_state=340561)
+        m = ElasticNet(n_splits=0, random_state=340561)
         m = m.fit(x, y)
 
         # should not make prediction unless value is passed for lambda
@@ -123,7 +123,7 @@ class TestElasticNet(unittest.TestCase):
 
     def test_coef_interpolation(self):
         x, y = self.inputs[0]
-        m = ElasticNet(n_folds=0, random_state=1729)
+        m = ElasticNet(n_splits=0, random_state=1729)
         m = m.fit(x, y)
 
         # predict for a value of lambda between two values on the computed path
@@ -142,7 +142,7 @@ class TestElasticNet(unittest.TestCase):
 
     def test_lambda_clip_warning(self):
         x, y = self.inputs[0]
-        m = ElasticNet(n_folds=0, random_state=1729)
+        m = ElasticNet(n_splits=0, random_state=1729)
         m = m.fit(x, y)
 
         # we should get a warning when we ask for predictions at values of

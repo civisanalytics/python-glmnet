@@ -25,7 +25,7 @@ def sanity_check_logistic(m, x):
     check_logistic_predict_proba(m, x, p)
 
     # if cv ran, check default behavior of predict and predict_proba
-    if m.n_folds >= 3:
+    if m.n_splits >= 3:
         p = m.predict(x)
         check_logistic_predict(m, x, p)
 
@@ -57,7 +57,7 @@ def sanity_check_regression(m, x):
     eq_(p.shape[0], x.shape[0])
 
     # if cv ran, check default behavior of predict
-    if m.n_folds >= 3:
+    if m.n_splits >= 3:
         p = m.predict(x)
         eq_(p.shape[0], x.shape[0])
 
@@ -71,7 +71,7 @@ def sanity_check_model_attributes(m):
 
 
 def sanity_check_cv_attrs(m, is_clf=False):
-    if m.n_folds >= 3:
+    if m.n_splits >= 3:
         if is_clf:
             ok_(m.coef_.shape[-1] == m.coef_path_.shape[1], "wrong size for coef_")
         else:

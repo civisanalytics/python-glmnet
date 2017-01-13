@@ -52,7 +52,7 @@ class LogitNet(BaseEstimator):
         The cut point to use for selecting lambda_best.
             arg_max lambda  cv_score(lambda) >= cv_score(lambda_max) - cut_point * standard_error(lambda_max)
 
-    n_folds : int, default 3
+    n_splits : int, default 3
         Number of cross validation folds for computing performance metrics and
         determining `lambda_best_` and `lambda_max_`. If non-zero, must be
         at least 3.
@@ -124,7 +124,7 @@ class LogitNet(BaseEstimator):
     """
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
-                 cut_point=1.0, n_folds=3, scoring=None, n_jobs=1, tol=1e-7,
+                 cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
                  max_iter=100000, random_state=None, verbose=False):
 
         self.alpha = alpha
@@ -134,7 +134,7 @@ class LogitNet(BaseEstimator):
         self.standardize = standardize
         self.fit_intercept = fit_intercept
         self.cut_point = cut_point
-        self.n_folds = n_folds
+        self.n_splits = n_splits
         self.scoring = scoring
         self.n_jobs = n_jobs
         self.tol = tol
@@ -143,7 +143,7 @@ class LogitNet(BaseEstimator):
         self.verbose = verbose
 
     def fit(self, X, y, sample_weight=None, relative_penalties=None):
-        """Fit the model to training data. If n_folds > 1 also run n-fold cross
+        """Fit the model to training data. If n_splits > 1 also run n-fold cross
         validation on all values in lambda_path.
 
         The model will be fit n+1 times. On the first pass, the lambda_path
@@ -189,9 +189,9 @@ class LogitNet(BaseEstimator):
 
         # score each model on the path of lambda values found by glmnet and
         # select the best scoring
-        if self.n_folds >= 3:
+        if self.n_splits >= 3:
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           relative_penalties, self.n_folds,
+                                           relative_penalties, self.n_splits,
                                            self.scoring, classifier=True,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
