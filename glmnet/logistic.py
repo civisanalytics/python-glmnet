@@ -153,9 +153,10 @@ class LogitNet(BaseEstimator):
         value of lambda, and `cv_standard_error_` will contain the standard
         error of `cv_mean_score_` for each value of lambda. The value of lambda
         which achieves the best performance in cross validation will be saved
-        to `cv_lambda_max_` additionally, the largest value of lambda s.t.:
-            cv_score(l) >= cv_score(l_max) - cut_point * standard_error(l_max)
-        will be saved to `cv_lambda_best_`.
+        to `lambda_max_` additionally, the largest value of lambda s.t.:
+            cv_score(l) >= cv_score(lambda_max_) -\
+                           cut_point * standard_error(lambda_max_)
+        will be saved to `lambda_best_`.
 
         Parameters
         ----------
