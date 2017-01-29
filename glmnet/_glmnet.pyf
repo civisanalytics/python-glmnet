@@ -147,7 +147,6 @@ python module _glmnet ! in
             threadsafe
         end subroutine elnet
 
-
         subroutine spelnet(ka,parm,no,ni,x,ix,jx,y,w,jd,vp,cl,ne,nx,nlam,flmin,ulam,thr,isd,intr,maxit,lmu,a0,ca,ia,nin,rsq,alm,nlp,jerr) ! in :_glmnet:_glmnet.f
             integer :: ka
             real*8 :: parm
@@ -197,6 +196,79 @@ python module _glmnet ! in
             threadsafe
         end subroutine solns
 
+        subroutine fishnet(parm,no,ni,x,y,o,w,jd,vp,cl,ne,nx,nlam,flmin,ulam,thr,isd,intr,maxit,lmu,a0,ca,ia,nin,dev0,dev,alm,nlp,jerr) ! in _glmnet.f
+            real*8 :: parm
+            integer intent(hide), check(shape(x,0)==no), depend(x) :: no=shape(x,0)
+            integer intent(hide), check(shape(x,1)==ni), depend(x) :: ni=shape(x,1)
+            real*8 dimension(no,ni) :: x
+            real*8 dimension(no), depend(no) :: y
+            real*8 dimension(no), depend(no) :: o
+            real*8 dimension(no), depend(no) :: w
+            integer dimension(*) :: jd
+            real*8 dimension(ni), depend(ni) :: vp
+            real*8 dimension(2,ni), depend(ni) :: cl
+            integer optional, depend(x) :: ne=min(shape(x, 1), nx)
+            integer :: nx
+            integer optional, check((flmin < 1.0 || len(ulam)==nlam)), depend(flmin, ulam) :: nlam=len(ulam)
+            real*8 :: flmin
+            real*8 dimension(nlam) :: ulam
+            real*8 :: thr
+            integer optional :: isd=1
+            integer optional :: intr=1
+            integer optional :: maxit=100000
+
+            ! output
+            integer intent(out) :: lmu
+            real*8 intent(out), dimension(nlam), depend(nlam) :: a0
+            real*8 intent(out), dimension(nx,nlam), depend(nlam) :: ca
+            integer intent(out), dimension(nx), depend(nx) :: ia
+            integer intent(out), dimension(nlam), depend(nlam) :: nin
+            real*8 intent(out), dimension(nlam), depend(nlam) :: dev0
+            real*8 intent(out), dimension(nlam), depend(nlam) :: dev
+            real*8 intent(out), dimension(nlam), depend(nlam) :: alm
+            integer intent(out) :: nlp
+            integer intent(out) :: jerr
+
+            threadsafe
+        end subroutine fishnet
+
+        subroutine spfishnet(parm,no,ni,x,ix,jx,y,o,w,jd,vp,cl,ne,nx,nlam,flmin,ulam,thr,isd,intr,maxit,lmu,a0,ca,ia,nin,dev0,dev,alm,nlp,jerr) ! in _glmnet.f
+            real*8 :: parm
+            integer check(len(y)>=no), depend(y) :: no
+            integer check(len(vp)>=ni), depend(vp) :: ni
+            real*8 dimension(*) :: x
+            integer dimension(*) :: ix
+            integer dimension(*) :: jx
+            real*8 dimension(no) :: y
+            real*8 dimension(no), depend(no) :: o
+            real*8 dimension(no), depend(no) :: w
+            integer dimension(*) :: jd
+            real*8 dimension(ni) :: vp
+            real*8 dimension(2,ni), depend(ni) :: cl
+            integer :: ne
+            integer :: nx
+            integer optional, check((flmin < 1.0 || len(ulam)>=nlam)), depend(flmin,ulam) :: nlam=len(ulam)
+            real*8 :: flmin
+            real*8 dimension(nlam) :: ulam
+            real*8 :: thr
+            integer optional :: isd=1
+            integer optional :: intr=1
+            integer optional :: maxit=100000
+
+            ! output
+            integer intent(out) :: lmu
+            real*8 intent(out), dimension(nlam), depend(nlam) :: a0
+            real*8 intent(out), dimension(nx,nlam), depend(nlam) :: ca
+            integer intnet(out), dimension(nx), depend(nx) :: ia
+            integer intent(out), dimension(nlam), depend(nlam) :: nin
+            real*8 intent(out), dimension(nlam), depend(nlam) :: dev0
+            real*8 intent(out), dimension(nlam), depend(nlam) :: dev
+            real*8 intent(out), dimension(nlam), depend(nlam) :: alm
+            integer intent(out) :: nlp
+            integer intent(out) :: jerr
+
+            threadsafe
+        end subroutine spfishnet
     end interface
 end python module _glmnet
 
