@@ -6,8 +6,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 from sklearn.base import clone
-# this will change to sklearn.exceptions in 0.18
-from sklearn.metrics.base import UndefinedMetricWarning
+from sklearn.exceptions import UndefinedMetricWarning
 from sklearn.model_selection import check_cv
 from sklearn.externals.joblib import Parallel, delayed
 
