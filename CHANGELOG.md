@@ -2,7 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.0 - 2017-03-01
+### Added
+* [#6](https://github.com/civisanalytics/python-glmnet/pull/6) expose relative penalty
 
-## 0.1.0 - 2016-06-03
+### Changed
+* [#10](https://github.com/civisanalytics/python-glmnet/pull/10) update Scikit-Learn to 0.18
+
+### Fixed
+* [#3](https://github.com/civisanalytics/python-glmnet/pull/3) ensure license and readme are included in sdist
+* [#8](https://github.com/civisanalytics/python-glmnet/pull/8) fix readme encoding
+* [#14](https://github.com/civisanalytics/python-glmnet/pull/14) fix reference to `lambda_best_` in docs
+* [#16](https://github.com/civisanalytics/python-glmnet/pull/16) fix import path for UndefinedMetricWarning
+
+## 1.0.0 - 2016-06-03
 ### Added
 - Initial release
