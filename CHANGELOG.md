@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.0.0 - 2017-03-01
+
+### API Changes
+* [#10](https://github.com/civisanalytics/python-glmnet/pull/10) the parameter `n_folds` in the constructors of `LogitNet` and `ElasticNet` has been changed to `n_splits` for consistency with Scikit-Learn.
+
 ### Added
 * [#6](https://github.com/civisanalytics/python-glmnet/pull/6) expose relative penalty
 
