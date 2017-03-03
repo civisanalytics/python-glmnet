@@ -1,0 +1,29 @@
+package:
+  name: glmnet
+  version: "1.0.0"
+
+source:
+  fn: glmnet-1.0.0.tar.gz
+  url: https://files.pythonhosted.org/packages/38/53/89c9eb398f4686efef8be30251018f183715193e7635d859130fd39f0891/glmnet-1.0.0.tar.gz
+  md5: 4348ad6532b83c6e0477e96c7fbe87bb
+
+requirements:
+  build:
+    - setuptools
+    - numpy x.x
+    - scikit-learn >=0.17.0
+    - scipy >=0.14.1
+
+  run:
+    - numpy x.x
+    - scikit-learn >=0.17.0
+    - scipy >=0.14.1
+
+test:
+  imports:
+    - glmnet
+
+about:
+  home: https://github.com/civisanalytics/python-glmnet
+  license: GNU General Public License v2 (GPLv2)
+  summary: 'Python wrapper for glmnet'
