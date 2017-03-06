@@ -357,7 +357,7 @@ class PoissonNet(BaseEstimator):
         return np.exp(self.decision_function(X, lamb))
 
     def score(self, X, y, lamb=None):
-        """Returns the nagative deviance for each value of lambda.
+        """Returns the negative deviance for each value of lambda.
 
         Parameters
         ----------
