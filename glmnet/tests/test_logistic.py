@@ -92,6 +92,15 @@ class TestLogitNet(unittest.TestCase):
             m = m.fit(x, y)
             check_accuracy(y, m.predict(x), 0.85, alpha=alpha)
 
+    def test_coef_limits(self):
+        x, y = self.binomial[0]
+        lower_limits = 0
+        upper_limits = np.repeat(1,x.shape[1])
+        m = LogitNet(lower_limits=lower_limits, upper_limits=upper_limits, random_state=69265)
+        m = m.fit(x, y)
+        assert(np.all(m.coef_) >= 0)
+        assert(np.all(m.coef_) <= 1)
+
     def test_relative_penalties(self):
         x, y = self.binomial[0]
         p = x.shape[1]

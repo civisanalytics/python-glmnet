@@ -84,7 +84,7 @@ class TestElasticNet(unittest.TestCase):
 
             # verify that the unpenalized coef ests exceed the penalized ones
             # in absolute value
-            assert(np.all(np.abs(m1.coef_) <= np.abs(m2.coef_)))            
+            assert(np.all(np.abs(m1.coef_) <= np.abs(m2.coef_)))
 
     def test_alphas(self):
         x, y = self.inputs[0]
@@ -92,6 +92,15 @@ class TestElasticNet(unittest.TestCase):
             m = ElasticNet(alpha=alpha, random_state=2465)
             m = m.fit(x, y)
             self.check_r2_score(y, m.predict(x), 0.90, alpha=alpha)
+
+    def test_coef_limits(self):
+        x, y = self.inputs[0]
+        lower_limits = 0
+        upper_limits = np.repeat(1,x.shape[1])
+        m = ElasticNet(lower_limits=lower_limits, upper_limits=upper_limits, random_state=5934)
+        m = m.fit(x, y)
+        assert(np.all(m.coef_) >= 0)
+        assert(np.all(m.coef_) <= 1)
 
     def test_n_splits(self):
         x, y = self.inputs[0]
