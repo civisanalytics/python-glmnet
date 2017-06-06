@@ -173,8 +173,6 @@ class ElasticNet(BaseEstimator):
         self : object
             Returns self.
         """
-
-
         if self.alpha > 1 or self.alpha < 0:
             raise ValueError("alpha must be between 0 and 1")
 
@@ -189,8 +187,11 @@ class ElasticNet(BaseEstimator):
 
         if self.n_splits >= 3:
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           relative_penalties, self.n_splits,
-                                           self.scoring, classifier=False,
+                                           relative_penalties,
+                                           self.n_splits,
+                                           self.random_state,
+                                           self.scoring,
+                                           classifier=False,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 

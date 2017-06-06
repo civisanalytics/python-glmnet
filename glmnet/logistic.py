@@ -192,8 +192,11 @@ class LogitNet(BaseEstimator):
         # select the best scoring
         if self.n_splits >= 3:
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           relative_penalties, self.n_splits,
-                                           self.scoring, classifier=True,
+                                           relative_penalties,
+                                           self.n_splits,
+                                           self.random_state,
+                                           self.scoring,
+                                           classifier=True,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 
