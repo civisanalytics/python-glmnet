@@ -5,6 +5,7 @@ from scipy import stats
 
 from sklearn.base import BaseEstimator
 from sklearn.metrics import r2_score
+from sklearn.model_selection import KFold
 from sklearn.utils import check_array, check_X_y
 
 from _glmnet import elnet, spelnet, solns
@@ -117,6 +118,9 @@ class ElasticNet(BaseEstimator):
         The largest value of lambda which is greater than lambda_max_ and
         performs within cut_point * standard error of lambda_max_.
     """
+
+    CV = KFold
+
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
                  cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
@@ -191,7 +195,6 @@ class ElasticNet(BaseEstimator):
                                            self.n_splits,
                                            self.random_state,
                                            self.scoring,
-                                           classifier=False,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 

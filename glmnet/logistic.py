@@ -6,6 +6,7 @@ from scipy import stats
 
 from sklearn.base import BaseEstimator
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import check_array, check_X_y
 from sklearn.utils.multiclass import check_classification_targets
 
@@ -122,6 +123,9 @@ class LogitNet(BaseEstimator):
         The largest value of lambda which is greater than lambda_max_ and
         performs within cut_point * standard error of lambda_max_.
     """
+
+    CV = StratifiedKFold
+
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
                  cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
@@ -196,7 +200,6 @@ class LogitNet(BaseEstimator):
                                            self.n_splits,
                                            self.random_state,
                                            self.scoring,
-                                           classifier=True,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 

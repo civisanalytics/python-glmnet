@@ -14,8 +14,8 @@ from .scorer import check_scoring
 
 
 def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
-                       n_splits, random_state, scoring, classifier,
-                       n_jobs, verbose):
+                       n_splits, random_state, scoring, n_jobs,
+                       verbose):
     """Score each model found by glmnet using cross validation.
 
     Parameters
@@ -47,19 +47,13 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
     verbose : bool
         Emit logging data and warnings when True.
 
-    classifier : boolean, optional, default False
-        Whether the task is a classification task, in which case
-        stratified KFold will be used.
-
     Returns
     -------
     scores : array, shape (n_lambda,)
         Scores for each value of lambda over all cv folds.
     """
     scorer = check_scoring(est, scoring)
-    cv = check_cv(n_splits, y, classifier)
-    cv.shuffle = True
-    cv.random_state = random_state
+    cv = est.CV(n_splits=n_splits, shuffle=True, random_state=random_state)
     cv_split = cv.split(X, y)
 
     # We score the model for every value of lambda, for classification
