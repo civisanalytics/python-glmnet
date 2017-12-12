@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.utils import check_array, check_X_y
 from sklearn.utils.multiclass import check_classification_targets
 
-from .errors import _check_glmnet_error_flag
+from .errors import _check_error_flag
 from _glmnet import lognet, splognet, lsolns
 from .util import (_fix_lambda_path,
                    _check_user_lambda,
@@ -362,7 +362,7 @@ class LogitNet(BaseEstimator):
 
         # raises RuntimeError if self.jerr_ is nonzero
         self.jerr_ = jerr
-        _check_glmnet_error_flag(self.jerr_, n_lambda)
+        _check_error_flag(self.jerr_)
 
         # glmnet may not return the requested number of lambda values, so we
         # need to trim the trailing zeros from the returned path so
