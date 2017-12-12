@@ -126,20 +126,6 @@ def _fix_lambda_path(lambda_path):
     return lambda_path
 
 
-def _check_glmnet_error_flag(jerr):
-    """Check the error flag. Issue warning on convergence errors (jerr < 0)
-    and exception on anything else."""
-
-    if jerr and jerr != 0:
-        if jerr < 0:
-            import warnings
-            msg = "glmnet did not converge for some values of lambda {}"
-            warnings.warn(msg.format(jerr), RuntimeWarning)
-        else:
-            msg = "glmnet error no. {}"
-            raise RuntimeError(msg.format(jerr))
-
-
 def _check_user_lambda(lambda_path, lambda_best=None, lamb=None):
     """Verify the user-provided value of lambda is acceptable and ensure this
     is a 1-d array.

@@ -63,6 +63,15 @@ class TestElasticNet(unittest.TestCase):
         m = m.fit(x, y)
         self.check_r2_score(y, m.predict(x), 0.90)
 
+    def test_with_no_predictor_variance(self):
+        x = np.ones((500, 1))
+        y = np.random.rand(500)
+
+        m = ElasticNet(random_state=561)
+        msg = "All predictors have zero variance (glmnet error no. 7777)."
+        with self.assertRaises(ValueError, msg=msg):
+            m.fit(x, y)
+
     def test_relative_penalties(self):
         m1 = ElasticNet(random_state=4328)
         m2 = ElasticNet(random_state=4328)
@@ -84,7 +93,7 @@ class TestElasticNet(unittest.TestCase):
 
             # verify that the unpenalized coef ests exceed the penalized ones
             # in absolute value
-            assert(np.all(np.abs(m1.coef_) <= np.abs(m2.coef_)))            
+            assert(np.all(np.abs(m1.coef_) <= np.abs(m2.coef_)))
 
     def test_alphas(self):
         x, y = self.inputs[0]
