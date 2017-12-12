@@ -2,9 +2,15 @@ import warnings
 
 
 def _check_glmnet_error_flag(jerr, n_lambda):
-    """Check the error flag. Issue warning on convergence errors (jerr < 0)
-    and exception on anything else."""
+    """Check the glmnet solver error flag and issue warnings or raise
+    exceptions as appropriate.
 
+    The codes break down roughly as follows:
+
+        jerr == 0: everything is fine
+        jerr > 0: fatal errors such as memory allocation problems
+        jerr < 0: non-fatal errors such as convergence warnings
+    """
     if jerr == 0:
         return
 
