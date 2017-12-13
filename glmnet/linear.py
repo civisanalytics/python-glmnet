@@ -7,9 +7,9 @@ from sklearn.base import BaseEstimator
 from sklearn.metrics import r2_score
 from sklearn.utils import check_array, check_X_y
 
+from .errors import _check_error_flag
 from _glmnet import elnet, spelnet, solns
 from .util import (_fix_lambda_path,
-                   _check_glmnet_error_flag,
                    _check_user_lambda,
                    _interpolate_model,
                    _score_lambda_path)
@@ -313,7 +313,7 @@ class ElasticNet(BaseEstimator):
 
         # raises RuntimeError if self.jerr_ is nonzero
         self.jerr_ = jerr
-        _check_glmnet_error_flag(self.jerr_)
+        _check_error_flag(self.jerr_)
 
         self.lambda_path_ = self.lambda_path_[:self.n_lambda_]
         self.lambda_path_ = _fix_lambda_path(self.lambda_path_)
