@@ -53,8 +53,7 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
         Scores for each value of lambda over all cv folds.
     """
     scorer = check_scoring(est, scoring)
-    cv = est.CV(n_splits=n_splits, shuffle=True, random_state=random_state)
-    cv_split = cv.split(X, y)
+    cv_split = est.cv.split(X, y)
 
     # We score the model for every value of lambda, for classification
     # models, this will be an intercept-only model, meaning it predicts

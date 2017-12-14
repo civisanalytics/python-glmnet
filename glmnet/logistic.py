@@ -146,6 +146,8 @@ class LogitNet(BaseEstimator):
         self.random_state = random_state
         self.verbose = verbose
 
+        self.cv = None
+
     def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
         validation on all values in lambda_path.
@@ -195,6 +197,9 @@ class LogitNet(BaseEstimator):
         # score each model on the path of lambda values found by glmnet and
         # select the best scoring
         if self.n_splits >= 3:
+            self.cv = self.CV(n_splits=self.n_splits, shuffle=True,
+                              random_state=self.random_state)
+
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
                                            relative_penalties,
                                            self.n_splits,
