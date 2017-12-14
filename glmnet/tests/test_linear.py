@@ -168,6 +168,14 @@ class TestElasticNet(unittest.TestCase):
         msg = "expected r2 of {}, got: {}, with: {}".format(at_least, score, other_params)
         self.assertTrue(score > at_least, msg)
 
+    def test_random_state_cv(self):
+        random_state = 133
+        m = ElasticNet(random_state=random_state)
+        x, y = self.inputs[0]
+        m.fit(x, y)
+        print(dir(m.cv))
+        assert m.cv.random_state == random_state
+
 
 if __name__ == "__main__":
     unittest.main()

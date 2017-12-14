@@ -196,6 +196,14 @@ class TestLogitNet(unittest.TestCase):
         self.assertEqual("Training data need to contain at least 2 classes.",
                          str(e.exception))
 
+    def test_random_state_cv(self):
+        random_state = 133
+        m = LogitNet(random_state=random_state)
+        x, y = self.binomial[0]
+        m.fit(x, y)
+        print(dir(m.cv))
+        assert m.cv.random_state == random_state
+
 
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)

@@ -13,8 +13,8 @@ from sklearn.externals.joblib import Parallel, delayed
 from .scorer import check_scoring
 
 
-def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring, classifier,
-                       n_jobs, verbose):
+def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
+                       scoring, n_jobs, verbose):
     """Score each model found by glmnet using cross validation.
 
     Parameters
@@ -31,9 +31,6 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring
     sample_weight : array, shape (n_samples,)
         Weight of each row in X.
 
-    n_splits : int
-        Number of folds for cross validation, must be at least 3.
-
     scoring : string, callable or None
         Scoring method to apply to each model.
 
@@ -43,18 +40,13 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring
     verbose : bool
         Emit logging data and warnings when True.
 
-    classifier : boolean, optional, default False
-        Whether the task is a classification task, in which case
-        stratified KFold will be used.
-
     Returns
     -------
     scores : array, shape (n_lambda,)
         Scores for each value of lambda over all cv folds.
     """
     scorer = check_scoring(est, scoring)
-    cv = check_cv(cv, y, classifier)
-    cv = cv.split(X, y)
+    cv_split = est.cv.split(X, y)
 
     # We score the model for every value of lambda, for classification
     # models, this will be an intercept-only model, meaning it predicts
@@ -68,7 +60,7 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, cv, scoring
         scores = Parallel(n_jobs=n_jobs, verbose=verbose, backend='threading')(
             delayed(_fit_and_score)(est, scorer, X, y, sample_weight, relative_penalties,
                                     est.lambda_path_, train_idx, test_idx)
-            for (train_idx, test_idx) in cv)
+            for (train_idx, test_idx) in cv_split)
 
     return scores
 

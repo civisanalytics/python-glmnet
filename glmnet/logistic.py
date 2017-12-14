@@ -6,6 +6,7 @@ from scipy import stats
 
 from sklearn.base import BaseEstimator
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import check_array, check_X_y
 from sklearn.utils.multiclass import check_classification_targets
 
@@ -122,6 +123,9 @@ class LogitNet(BaseEstimator):
         The largest value of lambda which is greater than lambda_max_ and
         performs within cut_point * standard error of lambda_max_.
     """
+
+    CV = StratifiedKFold
+
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
                  cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
@@ -141,6 +145,8 @@ class LogitNet(BaseEstimator):
         self.max_iter = max_iter
         self.random_state = random_state
         self.verbose = verbose
+
+        self.cv = None
 
     def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
@@ -191,9 +197,12 @@ class LogitNet(BaseEstimator):
         # score each model on the path of lambda values found by glmnet and
         # select the best scoring
         if self.n_splits >= 3:
+            self.cv = self.CV(n_splits=self.n_splits, shuffle=True,
+                              random_state=self.random_state)
+
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           relative_penalties, self.n_splits,
-                                           self.scoring, classifier=True,
+                                           relative_penalties,
+                                           self.scoring,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 

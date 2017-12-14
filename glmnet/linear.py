@@ -5,6 +5,7 @@ from scipy import stats
 
 from sklearn.base import BaseEstimator
 from sklearn.metrics import r2_score
+from sklearn.model_selection import KFold
 from sklearn.utils import check_array, check_X_y
 
 from .errors import _check_error_flag
@@ -117,6 +118,9 @@ class ElasticNet(BaseEstimator):
         The largest value of lambda which is greater than lambda_max_ and
         performs within cut_point * standard error of lambda_max_.
     """
+
+    CV = KFold
+
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
                  cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
@@ -136,6 +140,8 @@ class ElasticNet(BaseEstimator):
         self.max_iter = max_iter
         self.random_state = random_state
         self.verbose = verbose
+
+        self.cv = None
 
     def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
@@ -173,8 +179,6 @@ class ElasticNet(BaseEstimator):
         self : object
             Returns self.
         """
-
-
         if self.alpha > 1 or self.alpha < 0:
             raise ValueError("alpha must be between 0 and 1")
 
@@ -188,9 +192,12 @@ class ElasticNet(BaseEstimator):
         self._fit(X, y, sample_weight, relative_penalties)
 
         if self.n_splits >= 3:
+            self.cv = self.CV(n_splits=self.n_splits, shuffle=True,
+                              random_state=self.random_state)
+
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
-                                           relative_penalties, self.n_splits,
-                                           self.scoring, classifier=False,
+                                           relative_penalties,
+                                           self.scoring,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
 
