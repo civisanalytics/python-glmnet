@@ -202,8 +202,6 @@ class LogitNet(BaseEstimator):
 
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
                                            relative_penalties,
-                                           self.n_splits,
-                                           self.random_state,
                                            self.scoring,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)

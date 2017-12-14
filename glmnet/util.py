@@ -14,8 +14,7 @@ from .scorer import check_scoring
 
 
 def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
-                       n_splits, random_state, scoring, n_jobs,
-                       verbose):
+                       scoring, n_jobs, verbose):
     """Score each model found by glmnet using cross validation.
 
     Parameters
@@ -31,12 +30,6 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
 
     sample_weight : array, shape (n_samples,)
         Weight of each row in X.
-
-    n_splits : int
-        Number of folds for cross validation, must be at least 3.
-
-    random_state : np.random.RandomState or int, optional
-        The random state for cross validation.
 
     scoring : string, callable or None
         Scoring method to apply to each model.
