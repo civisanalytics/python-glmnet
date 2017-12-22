@@ -176,6 +176,11 @@ class TestElasticNet(unittest.TestCase):
         print(dir(m.cv))
         assert m.cv.random_state == random_state
 
+    def test_max_features(self):
+        x, y = self.inputs[0]
+        m = ElasticNet(n_splits=3, random_state=42)
+        m = m.fit(x, y, max_features=100)
+        self.check_r2_score(y, m.predict(x), 0.90)
 
 if __name__ == "__main__":
     unittest.main()

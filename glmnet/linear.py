@@ -143,7 +143,7 @@ class ElasticNet(BaseEstimator):
 
         self.cv = None
 
-    def fit(self, X, y, sample_weight=None, relative_penalties=None):
+    def fit(self, X, y, sample_weight=None, relative_penalties=None, max_features=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
         validation on all values in lambda_path.
 
@@ -174,6 +174,11 @@ class ElasticNet(BaseEstimator):
             Optional relative weight vector for penalty.
             0 entries remove penalty.
 
+        max_features : int
+            Optional maximum number of features with nonzero coefficients after
+            regularization. If not set, defaults to X.shape[1] + 1
+            Note, this will be ignored if the user specifies lambda_path.
+
         Returns
         -------
         self : object
@@ -189,7 +194,13 @@ class ElasticNet(BaseEstimator):
         if sample_weight is None:
             sample_weight = np.ones(X.shape[0])
 
-        self._fit(X, y, sample_weight, relative_penalties)
+        # This is a stopping criterion (ne), add 1 to ensure the final model
+        # includes all features. R defaults to nx = num_features, and
+        # ne = num_features + 1
+        if max_features is None:
+            max_features = X.shape[1] + 1
+
+        self._fit(X, y, sample_weight, relative_penalties, max_features)
 
         if self.n_splits >= 3:
             self.cv = self.CV(n_splits=self.n_splits, shuffle=True,
@@ -197,6 +208,7 @@ class ElasticNet(BaseEstimator):
 
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
                                            relative_penalties,
+                                           max_features,
                                            self.scoring,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
@@ -221,7 +233,7 @@ class ElasticNet(BaseEstimator):
 
         return self
 
-    def _fit(self, X, y, sample_weight, relative_penalties):
+    def _fit(self, X, y, sample_weight, relative_penalties, max_features):
 
         if self.lambda_path is not None:
             n_lambda = len(self.lambda_path)
@@ -243,12 +255,6 @@ class ElasticNet(BaseEstimator):
         coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')
         coef_bounds[0, :] = -np.inf
         coef_bounds[1, :] = np.inf
-
-        # This is a stopping criterion (ne), add 1 to ensure the final model
-        # includes all features. R defaults to nx = num_features, and
-        # ne = num_features + 1
-        # Note, this will be ignored when the user specifies lambda_path.
-        max_features = X.shape[1] + 1
 
         if X.shape[1] > X.shape[0]:
             # the glmnet docs suggest using a different algorithm for the case
