@@ -181,7 +181,7 @@ class LogitNet(BaseEstimator):
 
         max_features : int
             Optional maximum number of features with nonzero coefficients after
-            regularization. If not set, defaults to X.shape[1] + 1
+            regularization. If not set, defaults to X.shape[1]
             Note, this will be ignored if the user specifies lambda_path.
 
         Returns
@@ -196,11 +196,10 @@ class LogitNet(BaseEstimator):
         if sample_weight is None:
             sample_weight = np.ones(X.shape[0])
 
-        # This is a stopping criterion (ne), add 1 to ensure the final model
-        # includes all features. R defaults to nx = num_features, and
-        # ne = num_features + 1
+        # This is a stopping criterion (nx)
+        # R defaults to nx = num_features, and ne = num_features + 1
         if max_features is None:
-            max_features = X.shape[1] + 1
+            max_features = X.shape[1]
 
         # fit the model
         self._fit(X, y, sample_weight, relative_penalties, max_features)
@@ -327,8 +326,8 @@ class LogitNet(BaseEstimator):
                               exclude_vars,
                               relative_penalties,
                               coef_bounds,
+                              max_features + 1,
                               max_features,
-                              max_features - 1,
                               min_lambda_ratio,
                               self.lambda_path,
                               self.tol,
@@ -364,11 +363,11 @@ class LogitNet(BaseEstimator):
                             exclude_vars,
                             relative_penalties,
                             coef_bounds,
-                            max_features,
+                            max_features + 1,
                             min_lambda_ratio,
                             self.lambda_path,
                             self.tol,
-                            max_features - 1,
+                            max_features,
                             n_lambda,
                             self.standardize,
                             self.fit_intercept,

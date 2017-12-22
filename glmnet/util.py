@@ -32,12 +32,12 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, max_feature
         Weight of each row in X.
 
     relative_penalties: array, shape (n_features,)
-        Optional relative weight vector for penalty.
+        Relative weight vector for penalty.
         0 entries remove penalty.
 
     max_features : int
-        Optional maximum number of features with nonzero coefficients after
-        regularization. If not set, defaults to X.shape[1] + 1
+        Maximum number of features with nonzero coefficients after
+        regularization. If not set, defaults to X.shape[1]
         Note, this will be ignored if the user specifies lambda_path.
 
     scoring : string, callable or None
@@ -96,12 +96,12 @@ def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties, max_fea
         Weight of each row in X.
 
     relative_penalties: array, shape (n_features,)
-        Optional relative weight vector for penalty.
+        Relative weight vector for penalty.
         0 entries remove penalty.
 
     max_features : int
-        Optional maximum number of features with nonzero coefficients after
-        regularization. If not set, defaults to X.shape[1] + 1
+        Maximum number of features with nonzero coefficients after
+        regularization. If not set, defaults to X.shape[1]
         Note, this will be ignored if the user specifies lambda_path.
 
     score_lambda_path : array, shape (n_lambda,)
