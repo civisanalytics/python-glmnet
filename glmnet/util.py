@@ -13,7 +13,7 @@ from sklearn.externals.joblib import Parallel, delayed
 from .scorer import check_scoring
 
 
-def _score_lambda_path(est, X, y, sample_weight, relative_penalties, max_features,
+def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
                        scoring, n_jobs, verbose):
     """Score each model found by glmnet using cross validation.
 
@@ -34,11 +34,6 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, max_feature
     relative_penalties: array, shape (n_features,)
         Relative weight vector for penalty.
         0 entries remove penalty.
-
-    max_features : int
-        Maximum number of features with nonzero coefficients after
-        regularization. If not set, defaults to X.shape[1]
-        Note, this will be ignored if the user specifies lambda_path.
 
     scoring : string, callable or None
         Scoring method to apply to each model.
@@ -68,13 +63,13 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties, max_feature
 
         scores = Parallel(n_jobs=n_jobs, verbose=verbose, backend='threading')(
             delayed(_fit_and_score)(est, scorer, X, y, sample_weight, relative_penalties,
-                                    max_features, est.lambda_path_, train_idx, test_idx)
+                                    est.lambda_path_, train_idx, test_idx)
             for (train_idx, test_idx) in cv_split)
 
     return scores
 
 
-def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties, max_features,
+def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties,
                    score_lambda_path, train_inx, test_inx):
     """Fit and score a single model.
 
@@ -99,11 +94,6 @@ def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties, max_fea
         Relative weight vector for penalty.
         0 entries remove penalty.
 
-    max_features : int
-        Maximum number of features with nonzero coefficients after
-        regularization. If not set, defaults to X.shape[1]
-        Note, this will be ignored if the user specifies lambda_path.
-
     score_lambda_path : array, shape (n_lambda,)
         The lambda values to evaluate/score.
 
@@ -121,7 +111,7 @@ def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties, max_fea
         Scores for each value of lambda for a single cv fold.
     """
     m = clone(est)
-    m = m._fit(X[train_inx, :], y[train_inx], sample_weight[train_inx], relative_penalties, max_features)
+    m = m._fit(X[train_inx, :], y[train_inx], sample_weight[train_inx], relative_penalties)
 
     lamb = np.clip(score_lambda_path, m.lambda_path_[-1], m.lambda_path_[0])
     return scorer(m, X[test_inx, :], y[test_inx], lamb=lamb)

@@ -205,9 +205,9 @@ class TestLogitNet(unittest.TestCase):
         assert m.cv.random_state == random_state
 
     def test_max_features(self):
-        m = LogitNet(random_state=142)
+        m = LogitNet(random_state=142, max_features=100)
         x, y = self.binomial[0]
-        m = m.fit(x, y, max_features=100)
+        m = m.fit(x, y)
         check_accuracy(y, m.predict(x), 0.85)
 
 def check_accuracy(y, y_hat, at_least, **other_params):

@@ -178,8 +178,8 @@ class TestElasticNet(unittest.TestCase):
 
     def test_max_features(self):
         x, y = self.inputs[0]
-        m = ElasticNet(n_splits=3, random_state=42)
-        m = m.fit(x, y, max_features=100)
+        m = ElasticNet(n_splits=3, random_state=42, max_features=100)
+        m = m.fit(x, y)
         self.check_r2_score(y, m.predict(x), 0.90)
 
 if __name__ == "__main__":
