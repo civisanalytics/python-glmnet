@@ -79,6 +79,11 @@ class ElasticNet(BaseEstimator):
         Seed for the random number generator. The glmnet solver is not
         deterministic, this seed is used for determining the cv folds.
 
+    max_features : int
+        Optional maximum number of features with nonzero coefficients after
+        regularization. If not set, defaults to X.shape[1] during fit
+        Note, this will be ignored if the user specifies lambda_path.
+
     verbose : bool, default False
         When True some warnings and log messages are suppressed.
 
@@ -124,7 +129,7 @@ class ElasticNet(BaseEstimator):
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
                  cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
-                 max_iter=100000, random_state=None, verbose=False):
+                 max_iter=100000, random_state=None, max_features=None, verbose=False):
 
         self.alpha = alpha
         self.n_lambda = n_lambda
@@ -139,11 +144,12 @@ class ElasticNet(BaseEstimator):
         self.tol = tol
         self.max_iter = max_iter
         self.random_state = random_state
+        self.max_features = max_features
         self.verbose = verbose
 
         self.cv = None
 
-    def fit(self, X, y, sample_weight=None, relative_penalties=None, max_features=None):
+    def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
         validation on all values in lambda_path.
 
@@ -174,11 +180,6 @@ class ElasticNet(BaseEstimator):
             Optional relative weight vector for penalty.
             0 entries remove penalty.
 
-        max_features : int
-            Optional maximum number of features with nonzero coefficients after
-            regularization. If not set, defaults to X.shape[1]
-            Note, this will be ignored if the user specifies lambda_path.
-
         Returns
         -------
         self : object
@@ -194,12 +195,7 @@ class ElasticNet(BaseEstimator):
         if sample_weight is None:
             sample_weight = np.ones(X.shape[0])
 
-        # This is a stopping criterion (nx)
-        # R defaults to nx = num_features, and ne = num_features + 1
-        if max_features is None:
-            max_features = X.shape[1]
-
-        self._fit(X, y, sample_weight, relative_penalties, max_features)
+        self._fit(X, y, sample_weight, relative_penalties)
 
         if self.n_splits >= 3:
             self.cv = self.CV(n_splits=self.n_splits, shuffle=True,
@@ -207,7 +203,6 @@ class ElasticNet(BaseEstimator):
 
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
                                            relative_penalties,
-                                           max_features,
                                            self.scoring,
                                            n_jobs=self.n_jobs,
                                            verbose=self.verbose)
@@ -232,7 +227,7 @@ class ElasticNet(BaseEstimator):
 
         return self
 
-    def _fit(self, X, y, sample_weight, relative_penalties, max_features):
+    def _fit(self, X, y, sample_weight, relative_penalties):
 
         if self.lambda_path is not None:
             n_lambda = len(self.lambda_path)
@@ -262,6 +257,13 @@ class ElasticNet(BaseEstimator):
         else:
             algo_flag = 1
 
+        # This is a stopping criterion (nx)
+        # R defaults to nx = num_features, and ne = num_features + 1
+        if self.max_features is None:
+            max_features = X.shape[1]
+        else:
+            max_features = self.max_features
+
         if issparse(X):
             _x = csc_matrix(X, dtype=np.float64, copy=True)
 
@@ -285,8 +287,8 @@ class ElasticNet(BaseEstimator):
                              exclude_vars,
                              relative_penalties,
                              coef_bounds,
-                             max_features + 1,
                              max_features,
+                             X.shape[1] + 1,
                              min_lambda_ratio,
                              self.lambda_path,
                              self.tol,
@@ -313,7 +315,7 @@ class ElasticNet(BaseEstimator):
                            exclude_vars,
                            relative_penalties,
                            coef_bounds,
-                           max_features + 1,
+                           X.shape[1] + 1,
                            min_lambda_ratio,
                            self.lambda_path,
                            self.tol,
