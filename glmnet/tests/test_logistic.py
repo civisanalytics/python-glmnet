@@ -205,10 +205,12 @@ class TestLogitNet(unittest.TestCase):
         assert m.cv.random_state == random_state
 
     def test_max_features(self):
-        m = LogitNet(random_state=142, max_features=100)
-        x, y = self.binomial[0]
+        max_features = 5
+        m = LogitNet(random_state=1, max_features=max_features)
+        x, y = self.multinomial[3]
         m = m.fit(x, y)
-        check_accuracy(y, m.predict(x), 0.85)
+        num_features = np.count_nonzero(m.coef_, axis=1)
+        self.assertTrue(np.all(num_features < max_features))
 
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)
