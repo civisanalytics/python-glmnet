@@ -210,7 +210,7 @@ class TestLogitNet(unittest.TestCase):
         x, y = self.multinomial[3]
         m = m.fit(x, y)
         num_features = np.count_nonzero(m.coef_, axis=1)
-        self.assertTrue(np.all(num_features < max_features))
+        self.assertTrue(np.all(num_features <= max_features))
 
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)
