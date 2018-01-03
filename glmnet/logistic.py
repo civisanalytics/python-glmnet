@@ -232,7 +232,7 @@ class LogitNet(BaseEstimator):
 
         return self
 
-    def _fit(self, X, y, sample_weight=None, relative_penalties=None, max_features=None):
+    def _fit(self, X, y, sample_weight=None, relative_penalties=None):
         if self.lambda_path is not None:
             n_lambda = len(self.lambda_path)
             min_lambda_ratio = 1.0
