@@ -79,6 +79,11 @@ class ElasticNet(BaseEstimator):
         Seed for the random number generator. The glmnet solver is not
         deterministic, this seed is used for determining the cv folds.
 
+    max_features : int
+        Optional maximum number of features with nonzero coefficients after
+        regularization. If not set, defaults to X.shape[1] during fit
+        Note, this will be ignored if the user specifies lambda_path.
+
     verbose : bool, default False
         When True some warnings and log messages are suppressed.
 
@@ -124,7 +129,7 @@ class ElasticNet(BaseEstimator):
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
                  cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
-                 max_iter=100000, random_state=None, verbose=False):
+                 max_iter=100000, random_state=None, max_features=None, verbose=False):
 
         self.alpha = alpha
         self.n_lambda = n_lambda
@@ -139,6 +144,7 @@ class ElasticNet(BaseEstimator):
         self.tol = tol
         self.max_iter = max_iter
         self.random_state = random_state
+        self.max_features = max_features
         self.verbose = verbose
 
         self.cv = None
@@ -244,18 +250,19 @@ class ElasticNet(BaseEstimator):
         coef_bounds[0, :] = -np.inf
         coef_bounds[1, :] = np.inf
 
-        # This is a stopping criterion (ne), add 1 to ensure the final model
-        # includes all features. R defaults to nx = num_features, and
-        # ne = num_features + 1
-        # Note, this will be ignored when the user specifies lambda_path.
-        max_features = X.shape[1] + 1
-
         if X.shape[1] > X.shape[0]:
             # the glmnet docs suggest using a different algorithm for the case
             # of p >> n
             algo_flag = 2
         else:
             algo_flag = 1
+
+        # This is a stopping criterion (nx)
+        # R defaults to nx = num_features, and ne = num_features + 1
+        if self.max_features is None:
+            max_features = X.shape[1]
+        else:
+            max_features = self.max_features
 
         if issparse(X):
             _x = csc_matrix(X, dtype=np.float64, copy=True)
@@ -281,7 +288,7 @@ class ElasticNet(BaseEstimator):
                              relative_penalties,
                              coef_bounds,
                              max_features,
-                             max_features - 1,
+                             X.shape[1] + 1,
                              min_lambda_ratio,
                              self.lambda_path,
                              self.tol,
@@ -308,11 +315,11 @@ class ElasticNet(BaseEstimator):
                            exclude_vars,
                            relative_penalties,
                            coef_bounds,
-                           max_features,
+                           X.shape[1] + 1,
                            min_lambda_ratio,
                            self.lambda_path,
                            self.tol,
-                           max_features - 1,
+                           max_features,
                            n_lambda,
                            self.standardize,
                            self.fit_intercept,

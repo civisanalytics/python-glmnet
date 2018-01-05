@@ -31,6 +31,10 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
     sample_weight : array, shape (n_samples,)
         Weight of each row in X.
 
+    relative_penalties: array, shape (n_features,)
+        Relative weight vector for penalty.
+        0 entries remove penalty.
+
     scoring : string, callable or None
         Scoring method to apply to each model.
 
@@ -65,8 +69,8 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
     return scores
 
 
-def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties, score_lambda_path,
-                   train_inx, test_inx):
+def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties,
+                   score_lambda_path, train_inx, test_inx):
     """Fit and score a single model.
 
     Parameters
@@ -85,6 +89,10 @@ def _fit_and_score(est, scorer, X, y, sample_weight, relative_penalties, score_l
 
     sample_weight : array, shape (n_samples,)
         Weight of each row in X.
+
+    relative_penalties: array, shape (n_features,)
+        Relative weight vector for penalty.
+        0 entries remove penalty.
 
     score_lambda_path : array, shape (n_lambda,)
         The lambda values to evaluate/score.

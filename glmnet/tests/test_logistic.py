@@ -204,6 +204,13 @@ class TestLogitNet(unittest.TestCase):
         print(dir(m.cv))
         assert m.cv.random_state == random_state
 
+    def test_max_features(self):
+        max_features = 5
+        m = LogitNet(random_state=1, max_features=max_features)
+        x, y = self.multinomial[3]
+        m = m.fit(x, y)
+        num_features = np.count_nonzero(m.coef_, axis=1)
+        self.assertTrue(np.all(num_features <= max_features))
 
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)
