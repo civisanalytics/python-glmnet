@@ -223,11 +223,13 @@ class TestLogitNet(unittest.TestCase):
 
         unweighted = LogitNet(random_state=2, scoring='f1_micro')
         unweighted = unweighted.fit(x, y)
-        unweighted_acc = f1_score(y, unweighted.predict(x), average='micro')
+        unweighted_acc = f1_score(y, unweighted.predict(x), sample_weight=sample_weight,
+                                  average='micro')
 
         weighted = LogitNet(random_state=2, scoring='f1_micro')
         weighted = weighted.fit(x, y, sample_weight=sample_weight)
-        weighted_acc = f1_score(y, weighted.predict(x), average='micro')
+        weighted_acc = f1_score(y, weighted.predict(x), sample_weight=sample_weight,
+                                average='micro')
 
         self.assertTrue(weighted_acc >= unweighted_acc)
 
