@@ -213,11 +213,13 @@ class TestLogitNet(unittest.TestCase):
         self.assertTrue(np.all(num_features <= max_features))
 
     def test_use_sample_weights(self):
-        x, y = self.multinomial[0]
+        x, y = self.multinomial[1]
         class_0_idx = np.where(y==0)
-        to_throw_out = class_0_idx[0][:-3]
-        y = np.delete(y, to_throw_out)
-        x = np.delete(x, to_throw_out, axis=0)
+        to_drop = class_0_idx[0][:-3]
+        to_keep = np.ones(len(y), dtype=bool)
+        to_keep[to_drop] = False
+        y = y[to_keep]
+        x = x[to_keep, :]
         sample_weight = class_weight.compute_sample_weight('balanced', y)
         sample_weight[0] = 0.
 
