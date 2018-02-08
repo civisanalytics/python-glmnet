@@ -270,12 +270,10 @@ class LogitNet(BaseEstimator):
         # this is inspired by the R wrapper for glmnet, in lognet.R
         if sample_weight is not None:
             weight_gt_0 = sample_weight > 0
-            if not np.all(weight_gt_0):
-                sample_weight = sample_weight[weight_gt_0]
-                _y = _y[weight_gt_0, :]
-                X = X[weight_gt_0, :]
-            sample_weight = np.expand_dims(sample_weight, 1)
-            _y = _y * np.tile(sample_weight, (1, n_classes))
+            sample_weight = sample_weight[weight_gt_0]
+            _y = _y[weight_gt_0, :]
+            X = X[weight_gt_0, :]
+            _y = _y * np.expand_dims(sample_weight, 1)
 
         # we need some sort of "offset" array for glmnet
         # an array of shape (n_examples, n_classes)
