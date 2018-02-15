@@ -58,7 +58,7 @@ if __name__ == "__main__":
           cmdclass=versioneer.get_cmdclass(),
           version=versioneer.get_version(),
           description="Python wrapper for glmnet",
-          long_description=read('README.md'),
+          long_description=read('README.rst'),
           author="Bill Lattner",
           author_email="opensource@civisanalytics.com",
           url="https://github.com/civisanalytics/python-glmnet",
