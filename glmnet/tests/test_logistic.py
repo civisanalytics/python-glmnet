@@ -8,8 +8,8 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 from sklearn.datasets import make_classification
-from sklearn.metrics import accuracy_score
-from sklearn.utils import estimator_checks
+from sklearn.metrics import accuracy_score, f1_score
+from sklearn.utils import estimator_checks, class_weight
 from sklearn.utils.testing import ignore_warnings
 
 from util import sanity_check_logistic
@@ -211,6 +211,29 @@ class TestLogitNet(unittest.TestCase):
         m = m.fit(x, y)
         num_features = np.count_nonzero(m.coef_, axis=1)
         self.assertTrue(np.all(num_features <= max_features))
+
+    def test_use_sample_weights(self):
+        x, y = self.multinomial[1]
+        class_0_idx = np.where(y==0)
+        to_drop = class_0_idx[0][:-3]
+        to_keep = np.ones(len(y), dtype=bool)
+        to_keep[to_drop] = False
+        y = y[to_keep]
+        x = x[to_keep, :]
+        sample_weight = class_weight.compute_sample_weight('balanced', y)
+        sample_weight[0] = 0.
+
+        unweighted = LogitNet(random_state=2, scoring='f1_micro')
+        unweighted = unweighted.fit(x, y)
+        unweighted_acc = f1_score(y, unweighted.predict(x), sample_weight=sample_weight,
+                                  average='micro')
+
+        weighted = LogitNet(random_state=2, scoring='f1_micro')
+        weighted = weighted.fit(x, y, sample_weight=sample_weight)
+        weighted_acc = f1_score(y, weighted.predict(x), sample_weight=sample_weight,
+                                average='micro')
+
+        self.assertTrue(weighted_acc >= unweighted_acc)
 
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)

@@ -266,6 +266,15 @@ class LogitNet(BaseEstimator):
             # keep the original order.
             _y = (y[:, None] == self.classes_).astype(np.float64, order='F')
 
+        # use sample weights, making sure all weights are positive
+        # this is inspired by the R wrapper for glmnet, in lognet.R
+        if sample_weight is not None:
+            weight_gt_0 = sample_weight > 0
+            sample_weight = sample_weight[weight_gt_0]
+            _y = _y[weight_gt_0, :]
+            X = X[weight_gt_0, :]
+            _y = _y * np.expand_dims(sample_weight, 1)
+
         # we need some sort of "offset" array for glmnet
         # an array of shape (n_examples, n_classes)
         offset = np.zeros((X.shape[0], n_classes), dtype=np.float64,
