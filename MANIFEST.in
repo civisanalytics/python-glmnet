@@ -1,5 +1,5 @@
 include requirements.txt
-include README.md
+include README.rst
 include LICENSE
 recursive-include LICENSES *
 include versioneer.py
