@@ -14,6 +14,25 @@ work with tools from that ecosystem.
 Installation
 ------------
 
+conda
+~~~~~
+
+.. code:: bash
+
+    conda install -c conda-forge glmnet
+
+
+pip
+~~~
+
+.. code:: bash
+
+    pip install glmnet
+
+
+source
+~~~~~~
+
 ``glmnet`` depends on numpy, scikit-learn and scipy. A working Fortran
 compiler is also required to build the package, for Mac users,
 ``brew install gcc`` will take care of this requirement.
