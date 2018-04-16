@@ -44,6 +44,15 @@ class ElasticNet(BaseEstimator):
         will be on the scale of the original data regardless of the value
         of standardize.
 
+    lower_limits : array, (shape n_features,) default -infinity
+        Array of lower limits for each coefficient, must be non-positive.    
+        Can be a single value (which is then replicated), else an array
+        corresponding to the number of features.    
+
+    upper_limits : array, (shape n_features,) default +infinity
+        Array of upper limits for each coefficient, must be positive.
+        See lower_limits.
+
     fit_intercept : bool, default True
         Include an intercept term in the model.
 
@@ -128,6 +137,7 @@ class ElasticNet(BaseEstimator):
 
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
+                 lower_limits=-np.inf, upper_limits=np.inf,
                  cut_point=1.0, n_splits=3, scoring=None, n_jobs=1, tol=1e-7,
                  max_iter=100000, random_state=None, max_features=None, verbose=False):
 
@@ -136,6 +146,8 @@ class ElasticNet(BaseEstimator):
         self.min_lambda_ratio = min_lambda_ratio
         self.lambda_path = lambda_path
         self.standardize = standardize
+        self.lower_limits = lower_limits
+        self.upper_limits = upper_limits
         self.fit_intercept = fit_intercept
         self.cut_point = cut_point
         self.n_splits = n_splits
@@ -146,6 +158,12 @@ class ElasticNet(BaseEstimator):
         self.random_state = random_state
         self.max_features = max_features
         self.verbose = verbose
+
+        if any(self.lower_limits) > 0 if isinstance(self.lower_limits, np.ndarray) else self.lower_limits > 0:
+            raise ValueError("lower_limits must be non-positive")
+
+        if any(self.upper_limits) < 0 if isinstance(self.upper_limits, np.ndarray) else self.upper_limits < 0:
+            raise ValueError("upper_limits must be positive")
 
         self.cv = None
 
@@ -247,8 +265,8 @@ class ElasticNet(BaseEstimator):
                                          order='F')
 
         coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')
-        coef_bounds[0, :] = -np.inf
-        coef_bounds[1, :] = np.inf
+        coef_bounds[0, :] = self.lower_limits
+        coef_bounds[1, :] = self.upper_limits
 
         if X.shape[1] > X.shape[0]:
             # the glmnet docs suggest using a different algorithm for the case
