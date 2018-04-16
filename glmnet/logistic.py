@@ -48,8 +48,8 @@ class LogitNet(BaseEstimator):
 
     fit_intercept : bool, default True
         Include an intercept term in the model.
-
-	lower_limits : array, (shape n_features,) default -infinity
+    
+    lower_limits : array, (shape n_features,) default -infinity
         Array of lower limits for each coefficient, must be non-positive.
         Can be a single value (which is then replicated), else an array
         corresponding to the number of features.
