@@ -212,7 +212,7 @@ class LogitNet(BaseEstimator):
 
         if not np.isscalar(self.upper_limits):
             self.upper_limits = np.asarray(self.upper_limits)
-			if len(self.upper_limits) != X.shape[1]: 
+            if len(self.upper_limits) != X.shape[1]: 
                 raise ValueError("upper_limits must equal number of features")
 
         if any(self.lower_limits > 0) if isinstance(self.lower_limits, np.ndarray) else self.lower_limits > 0:
