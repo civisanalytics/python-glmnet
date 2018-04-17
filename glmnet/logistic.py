@@ -201,12 +201,19 @@ class LogitNet(BaseEstimator):
         self : object
             Returns self.
         """
+        X, y = check_X_y(X, y, accept_sparse='csr', ensure_min_samples=2)
+        if sample_weight is None:
+            sample_weight = np.ones(X.shape[0])        
 
         if not np.isscalar(self.lower_limits):
             self.lower_limits = np.asarray(self.lower_limits)
+            if len(self.lower_limits) != X.shape[1]: 
+                raise ValueError("lower_limits must equal number of features")
 
         if not np.isscalar(self.upper_limits):
             self.upper_limits = np.asarray(self.upper_limits)
+			if len(self.upper_limits) != X.shape[1]: 
+                raise ValueError("upper_limits must equal number of features")
 
         if any(self.lower_limits > 0) if isinstance(self.lower_limits, np.ndarray) else self.lower_limits > 0:
             raise ValueError("lower_limits must be non-positive")
@@ -216,10 +223,6 @@ class LogitNet(BaseEstimator):
 
         if self.alpha > 1 or self.alpha < 0:
             raise ValueError("alpha must be between 0 and 1")
-
-        X, y = check_X_y(X, y, accept_sparse='csr', ensure_min_samples=2)
-        if sample_weight is None:
-            sample_weight = np.ones(X.shape[0])
 
         # fit the model
         self._fit(X, y, sample_weight, relative_penalties)
