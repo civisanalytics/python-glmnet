@@ -94,8 +94,8 @@ class TestLogitNet(unittest.TestCase):
 
     def test_coef_limits(self):
         x, y = self.binomial[0]
-        lower_limits = np.repeat(-1, x.shape[1])
-        upper_limits = 0
+        lower_limits = 0
+        upper_limits = np.repeat(1, x.shape[1])
         m = LogitNet(lower_limits=lower_limits, upper_limits=upper_limits, random_state=69265, alpha=0)
         m = m.fit(x, y)
         assert(np.all(m.coef_ >= 0))
