@@ -197,7 +197,7 @@ class ElasticNet(BaseEstimator):
             Returns self.
         """
         if not np.isscalar(self.lower_limits):
-            self.lower_limits = np.asrray(self.lower_limits)
+            self.lower_limits = np.asarray(self.lower_limits)
 
         if not np.isscalar(self.upper_limits):
             self.upper_limits = np.asarray(self.upper_limits)
