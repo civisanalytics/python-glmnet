@@ -158,13 +158,6 @@ class ElasticNet(BaseEstimator):
         self.random_state = random_state
         self.max_features = max_features
         self.verbose = verbose
-
-        if any(self.lower_limits) > 0 if isinstance(self.lower_limits, np.ndarray) else self.lower_limits > 0:
-            raise ValueError("lower_limits must be non-positive")
-
-        if any(self.upper_limits) < 0 if isinstance(self.upper_limits, np.ndarray) else self.upper_limits < 0:
-            raise ValueError("upper_limits must be positive")
-
         self.cv = None
 
     def fit(self, X, y, sample_weight=None, relative_penalties=None):
@@ -203,6 +196,18 @@ class ElasticNet(BaseEstimator):
         self : object
             Returns self.
         """
+        if not np.isscalar(self.lower_limits):
+            self.lower_limits = np.asrray(self.lower_limits)
+
+        if not np.isscalar(self.upper_limits):
+            self.upper_limits = np.asarray(self.upper_limits)
+
+        if any(self.lower_limits > 0) if isinstance(self.lower_limits, np.ndarray) else self.lower_limits > 0:
+            raise ValueError("lower_limits must be non-positive")
+
+        if any(self.upper_limits < 0) if isinstance(self.upper_limits, np.ndarray) else self.upper_limits < 0:
+            raise ValueError("upper_limits must be positive")
+
         if self.alpha > 1 or self.alpha < 0:
             raise ValueError("alpha must be between 0 and 1")
 
