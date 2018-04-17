@@ -99,7 +99,7 @@ class TestLogitNet(unittest.TestCase):
         m = LogitNet(lower_limits=lower_limits, upper_limits=upper_limits, random_state=69265)
         m = m.fit(x, y)
         assert(np.all(m.coef_ >= 0))
-        assert(np.all(m.coef <= 1))
+        assert(np.all(m.coef_ <= 1))
 
     def test_relative_penalties(self):
         x, y = self.binomial[0]
