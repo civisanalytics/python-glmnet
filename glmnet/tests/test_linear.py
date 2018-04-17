@@ -104,12 +104,12 @@ class TestElasticNet(unittest.TestCase):
 
     def test_coef_limits(self):
             x, y = self.inputs[0]
-            lower_limits = 0
-            upper_limits = np.repeat(1, x.shape[1])
+            lower_limits = np.repeat(-1, x.shape[1])
+            upper_limits = 0
             m = ElasticNet(lower_limits=lower_limits, upper_limits=upper_limits, random_state=5934, alpha=0)
             m = m.fit(x, y)
-            assert(np.all(m.coef_ >= 0))
-            assert(np.all(m.coef_ <= 1))           
+            assert(np.all(m.coef_ >= -1))
+            assert(np.all(m.coef_ <= 0))           
 
     def test_n_splits(self):
         x, y = self.inputs[0]
