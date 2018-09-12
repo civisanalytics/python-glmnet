@@ -31,5 +31,6 @@ jobs:
           name: Run test suite
           command: |
             . venv/bin/activate
-            pytest -v glmnet
+            cd ~
+            pytest -v python-glmnet/glmnet
       
