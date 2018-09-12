@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+### Changed
+* [#44] (https://github.com/civisanalytics/python-glmnet/pull/44) Change CircleCI configuration file from v1 to v2.
+
 ## 2.0.0 - 2017-03-01
 
 ### API Changes

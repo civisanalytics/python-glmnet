@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/python-glmnet
+    docker:
+      - image: circleci/python:3.6.6
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+      - run:
+          name: Install environment
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            pip install -r dev-requirements.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Install Fortran compiler
+          command: sudo apt-get install -y gfortran
+      - run:
+          name: Install package under test
+          command: |
+            . venv/bin/activate
+            pip install .
+      - run:
+          name: Run test suite
+          command: |
+            . venv/bin/activate
+            pytest -v glmnet
+      
