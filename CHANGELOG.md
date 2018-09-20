@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 ### Changed
-* [#44] (https://github.com/civisanalytics/python-glmnet/pull/44) Change CircleCI configuration file from v1 to v2, switch to pytest, and test in Python versions 3.5 - 3.7.
+* [#44] (https://github.com/civisanalytics/python-glmnet/pull/44) Change CircleCI configuration file from v1 to v2, switch to pytest, and test in Python versions 3.4 - 3.7.
 
 ## 2.0.0 - 2017-03-01
 

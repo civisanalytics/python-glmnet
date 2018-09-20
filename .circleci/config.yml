@@ -6,6 +6,7 @@ workflows:
       - test-3.6
       - test-3.7
       - test-3.5
+      - test-3.4
 jobs:
   test-3.6: &unit-tests
     working_directory: ~/python-glmnet
@@ -40,6 +41,10 @@ jobs:
             . venv/bin/activate
             cd ~
             pytest -v python-glmnet/glmnet
+  test-3.4:
+    <<: *unit-tests
+    docker:
+      - image: circleci/python:3.4.9
   test-3.5:
     <<: *unit-tests
     docker:
