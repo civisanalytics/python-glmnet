@@ -14,6 +14,12 @@ work with tools from that ecosystem.
 Installation
 ------------
 
+requirements
+~~~~~~~~~~~~
+
+``python-glmnet`` requires Python version >= 3.4, ``scikit-learn``, ``numpy``,
+and ``scipy``. Installation from source or via ``pip`` requires a Fortran compiler.
+
 conda
 ~~~~~
 

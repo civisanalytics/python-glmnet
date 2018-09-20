@@ -1,8 +1,6 @@
 import itertools
 import unittest
 
-from nose.tools import ok_, eq_
-
 import numpy as np
 
 from scipy.sparse import csr_matrix
@@ -79,11 +77,11 @@ class TestLogitNet(unittest.TestCase):
             sanity_check_logistic(m, x)
 
             # check selection of lambda_best
-            ok_(m.lambda_best_inx_ <= m.lambda_max_inx_)
+            assert m.lambda_best_inx_ <= m.lambda_max_inx_
 
             # check full path predict
             p = m.predict(x, lamb=m.lambda_path_)
-            eq_(p.shape[-1], m.lambda_path_.size)
+            assert p.shape[-1] == m.lambda_path_.size
 
     def test_alphas(self):
         x, y = self.binomial[0]
@@ -247,7 +245,7 @@ class TestLogitNet(unittest.TestCase):
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)
     msg = "expected accuracy of {}, got: {} with {}".format(at_least, score, other_params)
-    ok_(score > at_least, msg)
+    assert score > at_least, msg
 
 
 if __name__ == "__main__":

@@ -1,0 +1,55 @@
+version: 2
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-3.6
+      - test-3.7
+      - test-3.5
+      - test-3.4
+jobs:
+  test-3.6: &unit-tests
+    working_directory: ~/python-glmnet
+    docker:
+      - image: circleci/python:3.6.6
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+      - run:
+          name: Install environment
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            pip install -r dev-requirements.txt
+      - save_cache:
+          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Install Fortran compiler
+          command: sudo apt-get install -y gfortran
+      - run:
+          name: Install package under test
+          command: |
+            . venv/bin/activate
+            pip install .
+      - run:
+          name: Run test suite
+          command: |
+            . venv/bin/activate
+            cd ~
+            pytest -v python-glmnet/glmnet
+  test-3.4:
+    <<: *unit-tests
+    docker:
+      - image: circleci/python:3.4.9
+  test-3.5:
+    <<: *unit-tests
+    docker:
+      - image: circleci/python:3.5.6
+  test-3.7:
+    <<: *unit-tests
+    docker:
+      - image: circleci/python:3.7.0
