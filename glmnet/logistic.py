@@ -203,6 +203,8 @@ class LogitNet(BaseEstimator):
         X, y = check_X_y(X, y, accept_sparse='csr', ensure_min_samples=2)
         if sample_weight is None:
             sample_weight = np.ones(X.shape[0])
+        else:
+            sample_weight = np.asarray(sample_weight)
 
         if not np.isscalar(self.lower_limits):
             self.lower_limits = np.asarray(self.lower_limits)
