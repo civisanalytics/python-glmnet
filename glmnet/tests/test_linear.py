@@ -180,8 +180,8 @@ class TestElasticNet(unittest.TestCase):
         m = ElasticNet(random_state=random_state)
         x, y = self.inputs[0]
         m.fit(x, y)
-        print(dir(m.cv))
-        assert m.cv.random_state == random_state
+        print(dir(m._cv))
+        assert m._cv.random_state == random_state
 
     def test_max_features(self):
         x, y = self.inputs[3]
