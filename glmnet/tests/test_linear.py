@@ -14,8 +14,6 @@ from util import sanity_check_regression
 from glmnet import ElasticNet
 
 
-
-
 class TestElasticNet(unittest.TestCase):
 
     def setUp(self):
@@ -38,7 +36,7 @@ class TestElasticNet(unittest.TestCase):
             "median_absolute_error",
         ]
 
-    @ignore_warnings(RuntimeWarning)
+    @ignore_warnings(category=RuntimeWarning)
     def test_estimator_interface(self):
         estimator_checks.check_estimator(ElasticNet)
 
@@ -109,7 +107,7 @@ class TestElasticNet(unittest.TestCase):
             m = ElasticNet(lower_limits=lower_limits, upper_limits=upper_limits, random_state=5934, alpha=0)
             m = m.fit(x, y)
             assert(np.all(m.coef_ >= -1))
-            assert(np.all(m.coef_ <= 0))           
+            assert(np.all(m.coef_ <= 0))
 
     def test_n_splits(self):
         x, y = self.inputs[0]

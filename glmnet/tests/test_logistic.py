@@ -66,7 +66,7 @@ class TestLogitNet(unittest.TestCase):
             "f1_weighted"
         ]
 
-    @ignore_warnings(RuntimeWarning)  # ignore convergence warnings from glmnet
+    @ignore_warnings(category=RuntimeWarning)  # convergence warnings from glmnet
     def test_estimator_interface(self):
         estimator_checks.check_estimator(LogitNet)
 
