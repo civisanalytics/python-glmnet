@@ -384,7 +384,9 @@ class ElasticNet(BaseEstimator):
 
         # drop last dimension (lambda path) when we are predicting for a
         # single value of lambda
-        return z.squeeze()
+        if lamb.shape[0] == 1:
+            z = z.squeeze(axis=-1)
+        return z
 
     def predict(self, X, lamb=None):
         """Predict the response Y for each sample in X
