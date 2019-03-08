@@ -496,7 +496,7 @@ class LogitNet(BaseEstimator):
 
         # reshape z to (n_samples, n_classes, n_lambda)
         n_lambda = len(np.atleast_1d(lamb))
-        z = z.reshape(z.shape[0], -1, n_lambda)
+        z = z.reshape(X.shape[0], -1, n_lambda)
 
         if z.shape[1] == 1:
             # binomial, for consistency and to match scikit-learn, add the
