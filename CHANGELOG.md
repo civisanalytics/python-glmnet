@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * [#44] (https://github.com/civisanalytics/python-glmnet/pull/44) Change CircleCI configuration file from v1 to v2, switch to pytest, and test in Python versions 3.4 - 3.7.
 
+### Fixed
+* [#51](https://github.com/civisanalytics/python-glmnet/pull/51)
+  Satisfy scikit-learn estimator checks. Includes
+  Allow one-sample predictions; allow list inputs for sample weights;
+  Ensure scikit-learn Estimator compatibility.
+
 ## 2.0.0 - 2017-03-01
 
 ### API Changes
