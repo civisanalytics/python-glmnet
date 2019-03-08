@@ -83,6 +83,14 @@ class TestLogitNet(unittest.TestCase):
             p = m.predict(x, lamb=m.lambda_path_)
             assert p.shape[-1] == m.lambda_path_.size
 
+    def test_one_row_predict(self):
+        # Verify that predicting on one row gives only one row of output
+        m = LogitNet(random_state=42)
+        for X, y in itertools.chain(self.binomial, self.multinomial):
+            m.fit(X, y)
+            p = m.predict(X[0].reshape((1, -1)))
+            assert p.shape == (1,)
+
     def test_alphas(self):
         x, y = self.binomial[0]
         for alpha in self.alphas:
@@ -241,6 +249,7 @@ class TestLogitNet(unittest.TestCase):
                                 average='micro')
 
         self.assertTrue(weighted_acc >= unweighted_acc)
+
 
 def check_accuracy(y, y_hat, at_least, **other_params):
     score = accuracy_score(y, y_hat)
