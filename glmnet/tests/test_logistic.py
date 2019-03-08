@@ -208,8 +208,8 @@ class TestLogitNet(unittest.TestCase):
         m = LogitNet(random_state=random_state)
         x, y = self.binomial[0]
         m.fit(x, y)
-        print(dir(m.cv))
-        assert m.cv.random_state == random_state
+        print(dir(m._cv))
+        assert m._cv.random_state == random_state
 
     def test_max_features(self):
         max_features = 5

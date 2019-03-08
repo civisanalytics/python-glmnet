@@ -7,7 +7,6 @@ from scipy.interpolate import interp1d
 
 from sklearn.base import clone
 from sklearn.exceptions import UndefinedMetricWarning
-from sklearn.model_selection import check_cv
 from sklearn.externals.joblib import Parallel, delayed
 
 from .scorer import check_scoring
@@ -50,7 +49,7 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
         Scores for each value of lambda over all cv folds.
     """
     scorer = check_scoring(est, scoring)
-    cv_split = est.cv.split(X, y)
+    cv_split = est._cv.split(X, y)
 
     # We score the model for every value of lambda, for classification
     # models, this will be an intercept-only model, meaning it predicts

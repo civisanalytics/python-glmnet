@@ -48,7 +48,7 @@ class LogitNet(BaseEstimator):
 
     fit_intercept : bool, default True
         Include an intercept term in the model.
-    
+
     lower_limits : array, (shape n_features,) default -infinity
         Array of lower limits for each coefficient, must be non-positive.
         Can be a single value (which is then replicated), else an array
@@ -56,7 +56,7 @@ class LogitNet(BaseEstimator):
 
     upper_limits : array, (shape n_features,) default +infinity
         Array of upper limits for each coefficient, must be positive.
-        See lower_limits.		
+        See lower_limits.
 
     cut_point : float, default 1
         The cut point to use for selecting lambda_best.
@@ -163,7 +163,6 @@ class LogitNet(BaseEstimator):
         self.random_state = random_state
         self.max_features = max_features
         self.verbose = verbose
-        self.cv = None
 
     def fit(self, X, y, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
@@ -203,16 +202,16 @@ class LogitNet(BaseEstimator):
         """
         X, y = check_X_y(X, y, accept_sparse='csr', ensure_min_samples=2)
         if sample_weight is None:
-            sample_weight = np.ones(X.shape[0])        
+            sample_weight = np.ones(X.shape[0])
 
         if not np.isscalar(self.lower_limits):
             self.lower_limits = np.asarray(self.lower_limits)
-            if len(self.lower_limits) != X.shape[1]: 
+            if len(self.lower_limits) != X.shape[1]:
                 raise ValueError("lower_limits must equal number of features")
 
         if not np.isscalar(self.upper_limits):
             self.upper_limits = np.asarray(self.upper_limits)
-            if len(self.upper_limits) != X.shape[1]: 
+            if len(self.upper_limits) != X.shape[1]:
                 raise ValueError("upper_limits must equal number of features")
 
         if any(self.lower_limits > 0) if isinstance(self.lower_limits, np.ndarray) else self.lower_limits > 0:
@@ -230,8 +229,8 @@ class LogitNet(BaseEstimator):
         # score each model on the path of lambda values found by glmnet and
         # select the best scoring
         if self.n_splits >= 3:
-            self.cv = self.CV(n_splits=self.n_splits, shuffle=True,
-                              random_state=self.random_state)
+            self._cv = self.CV(n_splits=self.n_splits, shuffle=True,
+                               random_state=self.random_state)
 
             cv_scores = _score_lambda_path(self, X, y, sample_weight,
                                            relative_penalties,
@@ -320,8 +319,8 @@ class LogitNet(BaseEstimator):
             relative_penalties = np.ones(X.shape[1], dtype=np.float64,
                                          order='F')
 
-        coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')        
-        coef_bounds[0, :] = self.lower_limits       
+        coef_bounds = np.empty((2, X.shape[1]), dtype=np.float64, order='F')
+        coef_bounds[0, :] = self.lower_limits
         coef_bounds[1, :] = self.upper_limits
 
         if n_classes == 2:
