@@ -24,6 +24,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   and test in Python versions 3.4 - 3.7.
 * [#36](https://github.com/civisanalytics/python-glmnet/pull/36)
   Convert README to .rst format for better display on PyPI (#35).
+* [#54](https://github.com/civisanalytics/python-glmnet/pull/54)
+  Use `setuptools` in `setup.py` and update author in metadata.
 
 ### Fixed
 * [#24](https://github.com/civisanalytics/python-glmnet/pull/24)
