@@ -12,15 +12,6 @@ except ImportError:
              " \n  $ pip install numpy")
 
 
-CLASSIFIERS = [
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-]
-
 f_compile_args = ['-ffixed-form', '-fdefault-real-8']
 
 
@@ -66,7 +57,6 @@ if __name__ == "__main__":
     import versioneer
 
     setup(name="glmnet",
-          classifiers=CLASSIFIERS,
           cmdclass=versioneer.get_cmdclass(),
           version=versioneer.get_version(),
           description="Python wrapper for glmnet",
@@ -78,9 +68,14 @@ if __name__ == "__main__":
           ext_modules=[glmnet_lib],
           packages=['glmnet'],
           classifiers=[
-              'Development Status :: 4 - Beta',
+              'Development Status :: 5 - Production/Stable',
               'Environment :: Console',
+              'Programming Language :: Python',
               'Programming Language :: Python :: 3',
+              'Programming Language :: Python :: 3.4',
+              'Programming Language :: Python :: 3.5',
+              'Programming Language :: Python :: 3.6',
+              'Programming Language :: Python :: 3.7',
               'Operating System :: OS Independent',
               'Intended Audience :: Developers',
               'Intended Audience :: Science/Research',
