@@ -1,6 +1,8 @@
 import sys
 import os
 import io
+import setuptools
+from setuptools import setup
 
 try:
     from numpy.distutils.core import Extension, setup
@@ -59,7 +61,7 @@ if __name__ == "__main__":
           version=versioneer.get_version(),
           description="Python wrapper for glmnet",
           long_description=read('README.rst'),
-          author="Bill Lattner",
+          author="Civis Analytics",
           author_email="opensource@civisanalytics.com",
           url="https://github.com/civisanalytics/python-glmnet",
           install_requires=read('requirements.txt').splitlines(),
