@@ -4,3 +4,5 @@ include LICENSE
 recursive-include LICENSES *
 include versioneer.py
 include glmnet/_version.py
+include glmnet/*.pyf
+exclude glmnet/*.c
