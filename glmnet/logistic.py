@@ -505,7 +505,10 @@ class LogitNet(BaseEstimator):
         else:
             # normalize for multinomial
             z /= np.expand_dims(z.sum(axis=1), axis=1)
-        return np.atleast_2d(z.squeeze())
+
+        if n_lambda == 1:
+            z = z.squeeze(axis=-1)
+        return z
 
     def predict(self, X, lamb=None):
         """Predict class labels for samples in X.

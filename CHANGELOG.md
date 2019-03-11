@@ -34,6 +34,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   Satisfy scikit-learn estimator checks. Includes:
   Allow one-sample predictions; allow list inputs for sample weights;
   Ensure scikit-learn Estimator compatibility.
+* [#53](https://github.com/civisanalytics/python-glmnet/pull/53)
+  Return correct dimensions for 1-row predictions, with or without lambda
+  path, in both `LogitNet` and `ElasticNet` (#52, #30, #25).
 
 ## 2.0.0 - 2017-03-01
 

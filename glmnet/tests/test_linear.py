@@ -53,6 +53,22 @@ class TestElasticNet(unittest.TestCase):
             p = m.predict(x, lamb=m.lambda_path_)
             self.assertEqual(p.shape[-1], m.lambda_path_.size)
 
+    def test_one_row_predict(self):
+        # Verify that predicting on one row gives only one row of output
+        m = ElasticNet(random_state=42)
+        for X, y in self.inputs:
+            m.fit(X, y)
+            p = m.predict(X[0].reshape((1, -1)))
+            assert p.shape == (1,)
+
+    def test_one_row_predict_with_lambda(self):
+        # One row to predict along with lambdas should give 2D output
+        m = ElasticNet(random_state=42)
+        for X, y in self.inputs:
+            m.fit(X, y)
+            p = m.predict(X[0].reshape((1, -1)), lamb=[20, 10])
+            assert p.shape == (1, 2)
+
     def test_with_single_var(self):
         x = np.random.rand(500,1)
         y = (1.3 * x).ravel()

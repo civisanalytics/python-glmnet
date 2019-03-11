@@ -26,7 +26,7 @@ class TestLogitNet(unittest.TestCase):
         x_wide, y_wide = make_classification(n_samples=100, n_features=150,
                                              random_state=8911)
         x_wide_sparse = csr_matrix(x_wide)
-        self.binomial = [(x,y), (x_sparse, y), (x_wide, y_wide),
+        self.binomial = [(x, y), (x_sparse, y), (x_wide, y_wide),
                          (x_wide_sparse, y_wide)]
 
         # multinomial
@@ -90,6 +90,32 @@ class TestLogitNet(unittest.TestCase):
             m.fit(X, y)
             p = m.predict(X[0].reshape((1, -1)))
             assert p.shape == (1,)
+
+    def test_one_row_predict_proba(self):
+        # Verify that predict_proba on one row gives 2D output
+        m = LogitNet(random_state=42)
+        for X, y in itertools.chain(self.binomial, self.multinomial):
+            m.fit(X, y)
+            p = m.predict_proba(X[0].reshape((1, -1)))
+            assert p.shape == (1, len(np.unique(y)))
+
+    def test_one_row_predict_with_lambda(self):
+        # One row to predict along with lambdas should give 2D output
+        m = LogitNet(random_state=42)
+        lamb = [0.01, 0.02, 0.04, 0.1]
+        for X, y in itertools.chain(self.binomial, self.multinomial):
+            m.fit(X, y)
+            p = m.predict(X[0].reshape((1, -1)), lamb=lamb)
+            assert p.shape == (1, len(lamb))
+
+    def test_one_row_predict_proba_with_lambda(self):
+        # One row to predict_proba along with lambdas should give 3D output
+        m = LogitNet(random_state=42)
+        lamb = [0.01, 0.02, 0.04, 0.1]
+        for X, y in itertools.chain(self.binomial, self.multinomial):
+            m.fit(X, y)
+            p = m.predict_proba(X[0].reshape((1, -1)), lamb=lamb)
+            assert p.shape == (1, len(np.unique(y)), len(lamb))
 
     def test_alphas(self):
         x, y = self.binomial[0]
