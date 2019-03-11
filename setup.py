@@ -12,6 +12,15 @@ except ImportError:
              " \n  $ pip install numpy")
 
 
+CLASSIFIERS = [
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+]
+
 f_compile_args = ['-ffixed-form', '-fdefault-real-8']
 
 
@@ -57,11 +66,12 @@ if __name__ == "__main__":
     import versioneer
 
     setup(name="glmnet",
+          classifiers=CLASSIFIERS,
           cmdclass=versioneer.get_cmdclass(),
           version=versioneer.get_version(),
           description="Python wrapper for glmnet",
           long_description=read('README.rst'),
-          author="Civis Analytics",
+          author="Civis Analytics Inc",
           author_email="opensource@civisanalytics.com",
           url="https://github.com/civisanalytics/python-glmnet",
           install_requires=read('requirements.txt').splitlines(),
