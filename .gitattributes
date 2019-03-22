@@ -1,1 +1,2 @@
 glmnet/_version.py export-subst
+glmnet/src/glmnet/* linguist-vendored
