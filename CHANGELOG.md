@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Changed
+* [#57](https://github.com/civisanalytics/python-glmnet/pull/57)
+  Mark the Fortran code as linguist-vendored so that GitHub classifies
+  this project as Python (#37).
+
 ## 2.1.1 - 2019-03-11
 ### Fixed
 * [#55](https://github.com/civisanalytics/python-glmnet/pull/55)
