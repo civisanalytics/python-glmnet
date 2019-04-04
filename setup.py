@@ -4,13 +4,6 @@ import io
 import setuptools
 from setuptools import setup
 
-try:
-    from numpy.distutils.core import Extension, setup
-except ImportError:
-    sys.exit("install requires: 'numpy'."
-             " use pip or easy_install."
-             " \n  $ pip install numpy")
-
 
 f_compile_args = ['-ffixed-form', '-fdefault-real-8']
 
