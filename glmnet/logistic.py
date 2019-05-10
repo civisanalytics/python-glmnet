@@ -114,7 +114,7 @@ class LogitNet(BaseEstimator):
         The set of coefficients for each value of lambda in lambda_path_.
 
     coef_ : array, shape (n_clases, n_features)
-        The coefficients corresponding to lamnda_best_.
+        The coefficients corresponding to lambda_best_.
 
     intercept_ : array, shape (n_classes,)
         The intercept corresponding to lambda_best_.
