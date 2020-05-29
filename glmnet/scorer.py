@@ -21,7 +21,7 @@ from sklearn.metrics import (r2_score, median_absolute_error, mean_absolute_erro
                roc_auc_score, average_precision_score,
                precision_score, recall_score, log_loss)
 from sklearn.utils.multiclass import type_of_target
-from sklearn.externals import six
+import six
 
 
 class _BaseScorer(six.with_metaclass(ABCMeta, object)):
