@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 
 from sklearn.base import clone
 from sklearn.exceptions import UndefinedMetricWarning
-from sklearn.externals.joblib import Parallel, delayed
+from joblib import Parallel, delayed
 
 from .scorer import check_scoring
 
