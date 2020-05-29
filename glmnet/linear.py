@@ -5,7 +5,7 @@ from scipy import stats
 
 from sklearn.base import BaseEstimator
 from sklearn.metrics import r2_score
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, GroupKFold
 from sklearn.utils import check_array, check_X_y
 
 from .errors import _check_error_flag
@@ -133,8 +133,6 @@ class ElasticNet(BaseEstimator):
         performs within cut_point * standard error of lambda_max_.
     """
 
-    CV = KFold
-
     def __init__(self, alpha=1, n_lambda=100, min_lambda_ratio=1e-4,
                  lambda_path=None, standardize=True, fit_intercept=True,
                  lower_limits=-np.inf, upper_limits=np.inf,
@@ -159,7 +157,7 @@ class ElasticNet(BaseEstimator):
         self.max_features = max_features
         self.verbose = verbose
 
-    def fit(self, X, y, sample_weight=None, relative_penalties=None):
+    def fit(self, X, y, groups=None, sample_weight=None, relative_penalties=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
         validation on all values in lambda_path.
 
@@ -180,8 +178,11 @@ class ElasticNet(BaseEstimator):
         X : array, shape (n_samples, n_features)
             Input features
 
-        Y : array, shape (n_samples,)
+        y : array, shape (n_samples,)
             Target values
+
+        groups: array, shape (n_samples,)
+            Group labels for the samples used while splitting the dataset into train/test set.
 
         sample_weight : array, shape (n_samples,)
             Optional weight vector for observations
@@ -227,10 +228,13 @@ class ElasticNet(BaseEstimator):
         self._fit(X, y, sample_weight, relative_penalties)
 
         if self.n_splits >= 3:
-            self._cv = self.CV(n_splits=self.n_splits, shuffle=True,
-                               random_state=self.random_state)
+            if groups is None:
+                self._cv = KFold(n_splits=self.n_splits, shuffle=True, random_state=self.random_state)
+            else:
+                self._cv = GroupKFold(n_splits=self.n_splits)
 
-            cv_scores = _score_lambda_path(self, X, y, sample_weight,
+            cv_scores = _score_lambda_path(self, X, y, groups,
+                                           sample_weight,
                                            relative_penalties,
                                            self.scoring,
                                            n_jobs=self.n_jobs,
