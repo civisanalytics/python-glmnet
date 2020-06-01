@@ -207,6 +207,9 @@ class LogitNet(BaseEstimator):
         else:
             sample_weight = np.asarray(sample_weight)
 
+            if y.shape != sample_weight.shape:
+                raise ValueError('the shape of weights is not the same with the shape of y')
+
         if not np.isscalar(self.lower_limits):
             self.lower_limits = np.asarray(self.lower_limits)
             if len(self.lower_limits) != X.shape[1]:
