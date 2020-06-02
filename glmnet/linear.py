@@ -157,7 +157,7 @@ class ElasticNet(BaseEstimator):
         self.max_features = max_features
         self.verbose = verbose
 
-    def fit(self, X, y, groups=None, sample_weight=None, relative_penalties=None):
+    def fit(self, X, y, sample_weight=None, relative_penalties=None, groups=None):
         """Fit the model to training data. If n_splits > 1 also run n-fold cross
         validation on all values in lambda_path.
 
@@ -181,15 +181,17 @@ class ElasticNet(BaseEstimator):
         y : array, shape (n_samples,)
             Target values
 
-        groups: array, shape (n_samples,)
-            Group labels for the samples used while splitting the dataset into train/test set.
-
         sample_weight : array, shape (n_samples,)
             Optional weight vector for observations
 
         relative_penalties: array, shape (n_features,)
             Optional relative weight vector for penalty.
             0 entries remove penalty.
+
+        groups: array, shape (n_samples,)
+            Group labels for the samples used while splitting the dataset into train/test set.
+            If the groups are specified, the groups will be passed to sklearn.model_selection.GroupKFold.
+            If None, then data will be split randomly for K-fold cross-validation via sklearn.model_selection.KFold.
 
         Returns
         -------
