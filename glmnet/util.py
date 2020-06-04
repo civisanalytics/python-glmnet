@@ -7,12 +7,12 @@ from scipy.interpolate import interp1d
 
 from sklearn.base import clone
 from sklearn.exceptions import UndefinedMetricWarning
-from sklearn.externals.joblib import Parallel, delayed
+from joblib import Parallel, delayed
 
 from .scorer import check_scoring
 
 
-def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
+def _score_lambda_path(est, X, y, groups, sample_weight, relative_penalties,
                        scoring, n_jobs, verbose):
     """Score each model found by glmnet using cross validation.
 
@@ -26,6 +26,9 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
 
     y : array, shape (n_samples,)
         Target values.
+
+    groups: array, shape (n_samples,)
+        Group labels for the samples used while splitting the dataset into train/test set.
 
     sample_weight : array, shape (n_samples,)
         Weight of each row in X.
@@ -49,7 +52,7 @@ def _score_lambda_path(est, X, y, sample_weight, relative_penalties,
         Scores for each value of lambda over all cv folds.
     """
     scorer = check_scoring(est, scoring)
-    cv_split = est._cv.split(X, y)
+    cv_split = est._cv.split(X, y, groups)
 
     # We score the model for every value of lambda, for classification
     # models, this will be an intercept-only model, meaning it predicts
