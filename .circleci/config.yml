@@ -30,6 +30,13 @@ jobs:
           name: Install Fortran compiler
           command: sudo apt-get install -y gfortran
       - run:
+          name: Build package under test and check for PyPI compliance via twine
+          command: |
+            . venv/bin/activate
+            pip install twine
+            python setup.py sdist
+            twine check dist/`ls dist/ | grep .tar.gz`
+      - run:
           name: Install package under test
           command: |
             . venv/bin/activate
