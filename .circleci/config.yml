@@ -15,16 +15,15 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "dev-requirements.txt" }}
       - run:
           name: Install environment
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install -r requirements.txt
             pip install -r dev-requirements.txt
       - save_cache:
-          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "dev-requirements.txt" }}
           paths:
             - "venv"
       - run:

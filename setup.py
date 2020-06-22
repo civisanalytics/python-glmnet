@@ -67,7 +67,12 @@ if __name__ == "__main__":
         author="Civis Analytics Inc",
         author_email="opensource@civisanalytics.com",
         url="https://github.com/civisanalytics/python-glmnet",
-        install_requires=read('requirements.txt').splitlines(),
+        install_requires=[
+            "numpy>=1.9.2",
+            "scikit-learn>=0.18.0",
+            "scipy>=0.14.1",
+            "joblib>=0.14.1",
+        ],
         python_requires=">=3.5.*",
         ext_modules=[glmnet_lib],
         packages=['glmnet'],
