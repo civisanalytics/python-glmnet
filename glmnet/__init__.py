@@ -1,9 +1,8 @@
+import pkg_resources
+
 from .logistic import LogitNet
 from .linear import ElasticNet
-from ._version import get_versions
 
 __all__ = ['LogitNet', 'ElasticNet']
 
-
-__version__ = get_versions()['version']
-del get_versions
+__version__ = pkg_resources.get_distribution("glmnet").version

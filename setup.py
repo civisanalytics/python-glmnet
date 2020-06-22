@@ -1,9 +1,13 @@
 import sys
 import os
-import io
-import setuptools
-from setuptools import setup
 
+
+_VERSION = "2.2.0"
+
+# `Extension` from setuptools doesn't have f2py to compile Fortran code,
+# so we have to use the one from numpy. To do so, we also need to use the
+# `setup` function from numpy, not from setuptools.
+# Source: https://stackoverflow.com/a/51691203
 try:
     from numpy.distutils.core import Extension, setup
 except ImportError:
@@ -11,12 +15,11 @@ except ImportError:
              " use pip or easy_install."
              " \n  $ pip install numpy")
 
-
 f_compile_args = ['-ffixed-form', '-fdefault-real-8']
 
 
 def read(fname):
-    with io.open(os.path.join(os.path.dirname(__file__),fname), encoding="utf-8") as _in:
+    with open(os.path.join(os.path.dirname(__file__), fname)) as _in:
         return _in.read()
 
 
@@ -46,39 +49,42 @@ else:
     library_dirs = None
 
 
-glmnet_lib = Extension(name='_glmnet',
-                       sources=['glmnet/_glmnet.pyf',
-                                'glmnet/src/glmnet/glmnet5.f90'],
-                       extra_f90_compile_args=f_compile_args,
-                       library_dirs=library_dirs,
-                       )
+glmnet_lib = Extension(
+    name='_glmnet',
+    sources=['glmnet/_glmnet.pyf',
+             'glmnet/src/glmnet/glmnet5.f90'],
+    extra_f90_compile_args=f_compile_args,
+    library_dirs=library_dirs,
+)
 
 if __name__ == "__main__":
-    import versioneer
-
-    setup(name="glmnet",
-          cmdclass=versioneer.get_cmdclass(),
-          version=versioneer.get_version(),
-          description="Python wrapper for glmnet",
-          long_description=read('README.rst'),
-          author="Civis Analytics Inc",
-          author_email="opensource@civisanalytics.com",
-          url="https://github.com/civisanalytics/python-glmnet",
-          install_requires=read('requirements.txt').splitlines(),
-          ext_modules=[glmnet_lib],
-          packages=['glmnet'],
-          classifiers=[
-              'Development Status :: 5 - Production/Stable',
-              'Environment :: Console',
-              'Programming Language :: Python',
-              'Programming Language :: Python :: 3',
-              'Programming Language :: Python :: 3.4',
-              'Programming Language :: Python :: 3.5',
-              'Programming Language :: Python :: 3.6',
-              'Programming Language :: Python :: 3.7',
-              'Operating System :: OS Independent',
-              'Intended Audience :: Developers',
-              'Intended Audience :: Science/Research',
-              'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
-              'Topic :: Scientific/Engineering'
-          ])
+    setup(
+        name="glmnet",
+        version=_VERSION,
+        description="Python wrapper for glmnet",
+        long_description=read('README.rst'),
+        long_description_content_type="text/x-rst",
+        author="Civis Analytics Inc",
+        author_email="opensource@civisanalytics.com",
+        url="https://github.com/civisanalytics/python-glmnet",
+        install_requires=read('requirements.txt').splitlines(),
+        python_requires=">=3.5.*",
+        ext_modules=[glmnet_lib],
+        packages=['glmnet'],
+        classifiers=[
+            'Development Status :: 5 - Production/Stable',
+            'Environment :: Console',
+            'Programming Language :: Python',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3 :: Only',
+            'Operating System :: OS Independent',
+            'Intended Audience :: Developers',
+            'Intended Audience :: Science/Research',
+            'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+            'Topic :: Scientific/Engineering'
+        ]
+    )
