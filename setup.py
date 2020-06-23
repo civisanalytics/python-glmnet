@@ -1,12 +1,9 @@
 import sys
 import os
 
-
-_VERSION = "2.2.0"
-
-# `Extension` from setuptools doesn't have f2py to compile Fortran code,
-# so we have to use the one from numpy. To do so, we also need to use the
-# `setup` function from numpy, not from setuptools.
+# `Extension` from setuptools cannot compile Fortran code, so we have to use
+# the one from numpy. To do so, we also need to use the `setup` function
+# from numpy, not from setuptools.
 # Source: https://stackoverflow.com/a/51691203
 try:
     from numpy.distutils.core import Extension, setup
@@ -14,6 +11,9 @@ except ImportError:
     sys.exit("install requires: 'numpy'."
              " use pip or easy_install."
              " \n  $ pip install numpy")
+
+
+_VERSION = "2.2.0"
 
 f_compile_args = ['-ffixed-form', '-fdefault-real-8']
 
