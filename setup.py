@@ -4,7 +4,12 @@ import os
 # `Extension` from setuptools cannot compile Fortran code, so we have to use
 # the one from numpy. To do so, we also need to use the `setup` function
 # from numpy, not from setuptools.
-# Source: https://stackoverflow.com/a/51691203
+# Confusingly, we need to explicitly import setuptools *before* importing
+# from numpy, so that numpy can internally detect and use the `setup` function
+# from setuptools.
+# References: https://stackoverflow.com/a/51691203
+#   and https://stackoverflow.com/a/55358607
+import setuptools  # noqa: F401
 try:
     from numpy.distutils.core import Extension, setup
 except ImportError:
