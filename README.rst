@@ -57,9 +57,9 @@ pip
 source
 ~~~~~~
 
-``glmnet`` depends on numpy, scikit-learn and scipy. A working Fortran
-compiler is also required to build the package, for Mac users,
-``brew install gcc`` will take care of this requirement.
+``glmnet`` depends on numpy, scikit-learn and scipy.
+A working Fortran compiler is also required to build the package.
+For Mac users, ``brew install gcc`` will take care of this requirement.
 
 .. code:: bash
 
