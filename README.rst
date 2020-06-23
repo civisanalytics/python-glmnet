@@ -1,6 +1,24 @@
 Python GLMNET
 =============
 
+|CircleCI| |Conda| |PyPI| |PyVersions|
+
+.. |CircleCI| image:: https://circleci.com/gh/civisanalytics/python-glmnet.svg?style=svg
+    :target: https://circleci.com/gh/civisanalytics/python-glmnet
+    :alt: Build status
+
+.. |Conda| image:: https://anaconda.org/conda-forge/glmnet/badges/version.svg
+   :target: https://anaconda.org/conda-forge/glmnet
+   :alt: Latest version on conda forge
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/glmnet.svg
+   :target: https://pypi.org/project/glmnet/
+   :alt: Latest version on PyPI
+
+.. |PyVersions| image:: https://img.shields.io/pypi/pyversions/glmnet.svg
+   :target: https://pypi.org/project/glmnet/
+   :alt: Supported python versions for python-glmnet
+
 This is a Python wrapper for the fortran library used in the R package
 `glmnet <http://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html>`__.
 While the library includes linear, logistic, Cox, Poisson, and
