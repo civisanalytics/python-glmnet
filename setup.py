@@ -76,7 +76,7 @@ if __name__ == "__main__":
               "scipy>=0.14.1",
               "joblib>=0.14.1",
           ],
-          python_requires=">=3.5.*",
+          python_requires=">=3.6.*",
           # We need pkg_resources, shipped with setuptools,
           # for version numbering.
           setup_requires=["setuptools"],
@@ -87,7 +87,6 @@ if __name__ == "__main__":
               'Environment :: Console',
               'Programming Language :: Python',
               'Programming Language :: Python :: 3',
-              'Programming Language :: Python :: 3.5',
               'Programming Language :: Python :: 3.6',
               'Programming Language :: Python :: 3.7',
               'Programming Language :: Python :: 3.8',

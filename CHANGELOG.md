@@ -13,7 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   Update the cross-validation for users to be able to define groups of
   observations, which is equivalent with *foldid* of *cvglmnet* in *R*.
 * [#64](https://github.com/civisanalytics/python-glmnet/pull/64)
-   - Python version support: Drop v3.4 and add v3.8.
+   - Python version support: Add v3.8, and drop v3.4 + v3.5.
    - Maintenance: Drop versioneer; update and pin dependencies for development.
 
 ## 2.1.1 - 2019-03-11

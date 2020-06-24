@@ -1,17 +1,18 @@
 version: 2
+
 workflows:
   version: 2
   test:
     jobs:
       - test-3.6
       - test-3.7
-      - test-3.5
       - test-3.8
+
 jobs:
-  test-3.6: &unit-tests
+  test-3.8: &unit-tests
     working_directory: ~/python-glmnet
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/python:3.8
     steps:
       - checkout
       - restore_cache:
@@ -47,15 +48,11 @@ jobs:
             . venv/bin/activate
             cd ~
             pytest -v python-glmnet/glmnet
-  test-3.5:
+  test-3.6:
     <<: *unit-tests
     docker:
-      - image: circleci/python:3.5
+      - image: circleci/python:3.6
   test-3.7:
     <<: *unit-tests
     docker:
       - image: circleci/python:3.7
-  test-3.8:
-    <<: *unit-tests
-    docker:
-      - image: circleci/python:3.8
