@@ -1,9 +1,15 @@
 import sys
 import os
-import io
-import setuptools
-from setuptools import setup
 
+# `Extension` from setuptools cannot compile Fortran code, so we have to use
+# the one from numpy. To do so, we also need to use the `setup` function
+# from numpy, not from setuptools.
+# Confusingly, we need to explicitly import setuptools *before* importing
+# from numpy, so that numpy can internally detect and use the `setup` function
+# from setuptools.
+# References: https://stackoverflow.com/a/51691203
+#   and https://stackoverflow.com/a/55358607
+import setuptools  # noqa: F401
 try:
     from numpy.distutils.core import Extension, setup
 except ImportError:
@@ -12,11 +18,13 @@ except ImportError:
              " \n  $ pip install numpy")
 
 
+_VERSION = "2.2.0"
+
 f_compile_args = ['-ffixed-form', '-fdefault-real-8']
 
 
 def read(fname):
-    with io.open(os.path.join(os.path.dirname(__file__),fname), encoding="utf-8") as _in:
+    with open(os.path.join(os.path.dirname(__file__), fname)) as _in:
         return _in.read()
 
 
@@ -54,17 +62,24 @@ glmnet_lib = Extension(name='_glmnet',
                        )
 
 if __name__ == "__main__":
-    import versioneer
-
     setup(name="glmnet",
-          cmdclass=versioneer.get_cmdclass(),
-          version=versioneer.get_version(),
+          version=_VERSION,
           description="Python wrapper for glmnet",
           long_description=read('README.rst'),
+          long_description_content_type="text/x-rst",
           author="Civis Analytics Inc",
           author_email="opensource@civisanalytics.com",
           url="https://github.com/civisanalytics/python-glmnet",
-          install_requires=read('requirements.txt').splitlines(),
+          install_requires=[
+              "numpy>=1.9.2",
+              "scikit-learn>=0.18.0",
+              "scipy>=0.14.1",
+              "joblib>=0.14.1",
+          ],
+          python_requires=">=3.6.*",
+          # We need pkg_resources, shipped with setuptools,
+          # for version numbering.
+          setup_requires=["setuptools"],
           ext_modules=[glmnet_lib],
           packages=['glmnet'],
           classifiers=[
@@ -72,10 +87,10 @@ if __name__ == "__main__":
               'Environment :: Console',
               'Programming Language :: Python',
               'Programming Language :: Python :: 3',
-              'Programming Language :: Python :: 3.4',
-              'Programming Language :: Python :: 3.5',
               'Programming Language :: Python :: 3.6',
               'Programming Language :: Python :: 3.7',
+              'Programming Language :: Python :: 3.8',
+              'Programming Language :: Python :: 3 :: Only',
               'Operating System :: OS Independent',
               'Intended Audience :: Developers',
               'Intended Audience :: Science/Research',

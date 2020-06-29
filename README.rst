@@ -1,6 +1,24 @@
 Python GLMNET
 =============
 
+|CircleCI| |Conda| |PyPI| |PyVersions|
+
+.. |CircleCI| image:: https://circleci.com/gh/civisanalytics/python-glmnet.svg?style=svg
+    :target: https://circleci.com/gh/civisanalytics/python-glmnet
+    :alt: Build status
+
+.. |Conda| image:: https://anaconda.org/conda-forge/glmnet/badges/version.svg
+   :target: https://anaconda.org/conda-forge/glmnet
+   :alt: Latest version on conda forge
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/glmnet.svg
+   :target: https://pypi.org/project/glmnet/
+   :alt: Latest version on PyPI
+
+.. |PyVersions| image:: https://img.shields.io/pypi/pyversions/glmnet.svg
+   :target: https://pypi.org/project/glmnet/
+   :alt: Supported python versions for python-glmnet
+
 This is a Python wrapper for the fortran library used in the R package
 `glmnet <http://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html>`__.
 While the library includes linear, logistic, Cox, Poisson, and
@@ -17,7 +35,7 @@ Installation
 requirements
 ~~~~~~~~~~~~
 
-``python-glmnet`` requires Python version >= 3.4, ``scikit-learn``, ``numpy``,
+``python-glmnet`` requires Python version >= 3.6, ``scikit-learn``, ``numpy``,
 and ``scipy``. Installation from source or via ``pip`` requires a Fortran compiler.
 
 conda
@@ -39,9 +57,9 @@ pip
 source
 ~~~~~~
 
-``glmnet`` depends on numpy, scikit-learn and scipy. A working Fortran
-compiler is also required to build the package, for Mac users,
-``brew install gcc`` will take care of this requirement.
+``glmnet`` depends on numpy, scikit-learn and scipy.
+A working Fortran compiler is also required to build the package.
+For Mac users, ``brew install gcc`` will take care of this requirement.
 
 .. code:: bash
 

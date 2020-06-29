@@ -1,35 +1,42 @@
 version: 2
+
 workflows:
   version: 2
   test:
     jobs:
       - test-3.6
       - test-3.7
-      - test-3.5
-      - test-3.4
+      - test-3.8
+
 jobs:
-  test-3.6: &unit-tests
+  test-3.8: &unit-tests
     working_directory: ~/python-glmnet
     docker:
-      - image: circleci/python:3.6.6
+      - image: circleci/python:3.8
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "dev-requirements.txt" }}
       - run:
           name: Install environment
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install -r requirements.txt
             pip install -r dev-requirements.txt
       - save_cache:
-          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.txt" }}
+          key: deps1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "dev-requirements.txt" }}
           paths:
             - "venv"
       - run:
           name: Install Fortran compiler
           command: sudo apt-get install -y gfortran
+      - run:
+          name: Build package under test and check for PyPI compliance via twine
+          command: |
+            . venv/bin/activate
+            pip install twine
+            python setup.py sdist
+            twine check dist/`ls dist/ | grep .tar.gz`
       - run:
           name: Install package under test
           command: |
@@ -41,15 +48,11 @@ jobs:
             . venv/bin/activate
             cd ~
             pytest -v python-glmnet/glmnet
-  test-3.4:
+  test-3.6:
     <<: *unit-tests
     docker:
-      - image: circleci/python:3.4.9
-  test-3.5:
-    <<: *unit-tests
-    docker:
-      - image: circleci/python:3.5.6
+      - image: circleci/python:3.6
   test-3.7:
     <<: *unit-tests
     docker:
-      - image: circleci/python:3.7.0
+      - image: circleci/python:3.7
