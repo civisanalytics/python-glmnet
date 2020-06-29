@@ -12,7 +12,10 @@ from sklearn.utils.multiclass import check_classification_targets
 
 from .errors import _check_error_flag
 from _glmnet import lognet, splognet, lsolns
-from glmnet.util import _fix_lambda_path, _score_lambda_path
+from glmnet.util import (_fix_lambda_path,
+                         _check_user_lambda,
+                         _interpolate_model,
+                         _score_lambda_path)
 
 
 class LogitNet(BaseEstimator):

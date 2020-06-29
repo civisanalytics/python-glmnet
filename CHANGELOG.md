@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 2.2.1 - 2020-06-30
+### Fix
+* [#65](https://github.com/civisanalytics/python-glmnet/pull/65)
+  Remove `six` dependency entirely.
+
 ## 2.2.0 - 2020-06-29
 ### Changed
 * [#57](https://github.com/civisanalytics/python-glmnet/pull/57)
