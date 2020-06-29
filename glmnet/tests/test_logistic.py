@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.utils import estimator_checks, class_weight
 from sklearn.utils.testing import ignore_warnings
 
-from util import sanity_check_logistic
+from glmnet.tests.util import sanity_check_logistic
 
 from glmnet import LogitNet
 

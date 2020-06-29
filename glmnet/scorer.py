@@ -21,10 +21,9 @@ from sklearn.metrics import (r2_score, median_absolute_error, mean_absolute_erro
                roc_auc_score, average_precision_score,
                precision_score, recall_score, log_loss)
 from sklearn.utils.multiclass import type_of_target
-import six
 
 
-class _BaseScorer(six.with_metaclass(ABCMeta, object)):
+class _BaseScorer(metaclass=ABCMeta):
     def __init__(self, score_func, sign, kwargs):
         self._kwargs = kwargs
         self._score_func = score_func
@@ -173,7 +172,7 @@ class _ThresholdScorer(_BaseScorer):
 
 
 def get_scorer(scoring):
-    if isinstance(scoring, six.string_types):
+    if isinstance(scoring, str):
         try:
             scorer = SCORERS[scoring]
         except KeyError:
