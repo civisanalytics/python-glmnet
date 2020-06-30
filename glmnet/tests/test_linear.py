@@ -9,7 +9,7 @@ from sklearn.metrics import r2_score
 from sklearn.utils import estimator_checks
 from sklearn.utils.testing import ignore_warnings
 
-from util import sanity_check_regression
+from glmnet.tests.util import sanity_check_regression
 
 from glmnet import ElasticNet
 

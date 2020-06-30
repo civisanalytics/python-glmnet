@@ -9,7 +9,7 @@ from sklearn.base import clone
 from sklearn.exceptions import UndefinedMetricWarning
 from joblib import Parallel, delayed
 
-from .scorer import check_scoring
+from glmnet.scorer import check_scoring
 
 
 def _score_lambda_path(est, X, y, groups, sample_weight, relative_penalties,

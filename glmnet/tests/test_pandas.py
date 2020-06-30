@@ -3,7 +3,7 @@ import unittest
 from sklearn.datasets import make_regression, make_classification
 from glmnet import LogitNet, ElasticNet
 
-from util import sanity_check_logistic, sanity_check_regression
+from glmnet.tests.util import sanity_check_logistic, sanity_check_regression
 
 pd = None
 try:
