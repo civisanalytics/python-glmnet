@@ -203,6 +203,9 @@ class LogitNet(BaseEstimator):
         self : object
             Returns self.
         """
+        # keep local copy of features
+        self.X_ = X
+        
         X, y = check_X_y(X, y, accept_sparse='csr', ensure_min_samples=2)
         if sample_weight is None:
             sample_weight = np.ones(X.shape[0])
