@@ -19,6 +19,8 @@ def coeff_path_plot(
     xlabel=None,
     ylabel=None,
     title=None,
+    bbox_to_anchor=None,
+    yscale=None,
     save_path=None,
 ):
     """Plot coefficient's paths vs -Log(lambda).
@@ -60,14 +62,19 @@ def coeff_path_plot(
     title : string or None
         Title of the plot.
 
+    bbox_to_anchor: tuple, list or None
+        Relative coordinates for legend location outside of the plot.
+
+    yscale: string or None
+        Scale for y-axis (coefficients). Valid options are
+        "linear", "log", "symlog", "logit". More on:
+        https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html
+
     save_path: string or None
-        The full or relative path to save the image including the image format.
+        The full or relative path to save the plot including the image format.
         For example "myplot.png" or "../../myplot.pdf"
 
-    Returns
-    -------
-    scores : array, shape (n_lambda,)
-        Sc
+    Returns None
     """
     # initializing feature_names
     if feature_names is None:
@@ -131,11 +138,27 @@ def coeff_path_plot(
 
     # initializing title
     if title is None:
-        title = fr"Best $\lambda$ = {model.lambda_best_[0]:.2} with {len(np.nonzero(  model.coef_)[1])} Features"
+        title = fr"Best $\lambda$ = {est.lambda_best_[0]:.2} with {len(np.nonzero(np.reshape(est.coef_, (1,-1)))[1])} Features"
     elif isinstance(title, str):
         title = title
     else:
         raise TypeError("Only string type is allowed for title.")
+
+    # initializing bbox_to_anchor
+    if bbox_to_anchor is None:
+        bbox_to_anchor = (1.2, 0.5)
+    elif isinstance(bbox_to_anchor, tuple) or isinstance(bbox_to_anchor, list):
+        bbox_to_anchor = bbox_to_anchor
+    else:
+        raise TypeError("Only tuple or list type is allowed for bbox_to_anchor.")
+
+    # initializing yscale
+    if yscale is None:
+        yscale = "linear"
+    elif isinstance(yscale, str):
+        yscale = yscale
+    else:
+        raise TypeError("Only string type is allowed for yscale.")
 
     # plotting
     fig, ax = plt.subplots(figsize=figsize)
@@ -149,7 +172,7 @@ def coeff_path_plot(
     if legend:
         ax.legend(
             loc=legendloc,
-            bbox_to_anchor=(1.2, 0.5),
+            bbox_to_anchor=bbox_to_anchor,
             ncol=1,
             prop={"size": fontsize * 0.75},
             framealpha=0.0,
@@ -160,6 +183,7 @@ def coeff_path_plot(
     ax.set_title(title, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize * 0.85)
     ax.grid(grid)
+    ax.set_yscale(yscale)
     if save_path:
         plt.savefig(save_path, bbox_inches="tight", dpi=200)
     plt.show()
