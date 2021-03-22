@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+## 2.2.2 - 2021-03-21
+### Added
+* [#70](https://github.com/civisanalytics/python-glmnet/pull/70)
+  Add new plotting functionality for cross-validation score and coefficient path.
 
 ## 2.2.1 - 2020-06-30
 ### Fix
