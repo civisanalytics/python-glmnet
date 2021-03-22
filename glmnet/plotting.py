@@ -13,9 +13,9 @@ def coeff_path_plot(
     figsize=(10, 6),
     linestyle="-",
     fontsize=18,
-    legendloc="center",
     grid=True,
     legend=True,
+    legendloc="center",
     xlabel=None,
     ylabel=None,
     title=None,
@@ -44,14 +44,14 @@ def coeff_path_plot(
         tick_params, and legend are resized with 0.85, 0.85, 0.75,
         and 0.75 fraction of title fontsize, respectively.
 
-    legendloc: string
-        Legend location.
-
     grid : bool
         Whether to show (x,y) grid on the plot.
 
     legend: bool
         Whether to show legend on the plot.
+
+    legendloc: string
+        Legend location.
 
     xlabel : string or None
         Xlabel of the plot.
@@ -62,13 +62,13 @@ def coeff_path_plot(
     title : string or None
         Title of the plot.
 
-    bbox_to_anchor: tuple, list or None
-        Relative coordinates for legend location outside of the plot.
-
     yscale: string or None
         Scale for y-axis (coefficients). Valid options are
         "linear", "log", "symlog", "logit". More on:
         https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html
+
+    bbox_to_anchor: tuple, list or None
+        Relative coordinates for legend location outside of the plot.
 
     save_path: string or None
         The full or relative path to save the plot including the image format.
@@ -114,7 +114,7 @@ def coeff_path_plot(
     else:
         raise TypeError("Only bool type is allowed for grid.")
 
-    # initializing grid
+    # initializing legend
     if isinstance(legend, bool):
         legend = legend
     else:
@@ -186,4 +186,210 @@ def coeff_path_plot(
     ax.set_yscale(yscale)
     if save_path:
         plt.savefig(save_path, bbox_inches="tight", dpi=200)
+    plt.show()
+
+
+def cv_score_plot(
+    est,
+    figsize=(10, 6),
+    linestyle="--",
+    linewidth=3,
+    colors=None,
+    marker="o",
+    markersize=5,
+    fontsize=18,
+    grid=True,
+    legend=True,
+    legendloc="best",
+    xlabel=None,
+    ylabel=None,
+    title=None,
+    save_path=None,
+):
+    """Plot n-folds cross-validation scores vs -Log(lambda).
+
+    Parameters
+    ----------
+    est : estimator
+        The previously fitted estimator.
+
+    figsize : tuple or list, as (width, height)
+        Figure size.
+
+    linestyle: string
+        Linestyle of the vertical lamda lines.
+
+    linewidth: integer or float
+        Linewidth of the vertical lamda lines.
+
+    colors: list or tuple
+        Colors of the marker, errorbar line, max_lambda line,
+        and best_lambda line, respectively. The default colors
+        are ("red", "black", "cyan", "blue"). The length of the
+        passed tuple/list should be always four.
+
+    marker: str, optional, (default="o")
+        Marker style. More details on:
+        (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
+    markersize: intger or float
+        Markersize.
+
+    fontsize : int, float
+        Fontsize of the title. The fontsizes of xlabel, ylabel,
+        tick_params, and legend are resized with 0.85, 0.85, 0.75,
+        and 0.85 fraction of title fontsize, respectively.
+
+    legendloc: string
+        Legend location.
+
+    grid : bool
+        Whether to show (x,y) grid on the plot.
+
+    legend: bool
+        Whether to show legend on the plot.
+
+    legendloc: string
+        Legend location.
+
+    xlabel : string or None
+        Xlabel of the plot.
+
+    ylabel : string or None
+        Ylabel of the plot.
+
+    title : string or None
+        Title of the plot.
+
+    save_path: string or None
+        The full or relative path to save the image including the image format.
+        For example "myplot.png" or "../../myplot.pdf"
+
+    Returns None
+    """
+
+    # initializing figsize
+    if isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # initializing colors
+    if colors is None:
+        colors = ["red", "black", "cyan", "blue"]
+    elif (isinstance(colors, tuple) or isinstance(colors, list)) and len(colors) == 4:
+        colors = colors
+    else:
+        raise TypeError("Only tuple or list with length 4 is allowed for colors.")
+
+    # initializing marker
+    if isinstance(marker, str):
+        marker = marker
+    else:
+        raise TypeError("Only str type is allowed for marker.")
+
+    # initializing markersize
+    if isinstance(markersize, float) or isinstance(markersize, int):
+        markersize = markersize
+    else:
+        raise TypeError("Only int and float types are allowed for markersize.")
+
+    # initializing fontsize
+    if isinstance(fontsize, float) or isinstance(fontsize, int):
+        fontsize = fontsize
+    else:
+        raise TypeError("Only integer and float types are allowed for fontsize.")
+
+    # initializing linestyle
+    if isinstance(linestyle, str):
+        linestyle = linestyle
+    else:
+        raise TypeError("Only string type is allowed for linestyle.")
+
+    # initializing linewidth
+    if isinstance(linewidth, int) or isinstance(linewidth, float):
+        linestyle = linestyle
+    else:
+        raise TypeError("Only string type is allowed for linestyle.")
+
+    # initializing grid
+    if isinstance(grid, bool):
+        grid = grid
+    else:
+        raise TypeError("Only bool type is allowed for grid.")
+
+    # initializing grid
+    if isinstance(legend, bool):
+        legend = legend
+    else:
+        raise TypeError("Only bool type is allowed for legend.")
+
+    # initializing xlabel
+    if xlabel is None:
+        xlabel = r"-$Log(\lambda)$"
+    elif isinstance(xlabel, str):
+        xlabel = xlabel
+    else:
+        raise TypeError("Only string type is allowed for xlabel.")
+
+    # initializing ylabel
+    if ylabel is None:
+        ylabel = f"""{est.n_splits}-Folds CV Mean {' '.join((est.scoring).split("_")).upper()}"""
+    elif isinstance(xlabel, str):
+        ylabel = ylabel
+    else:
+        raise TypeError("Only string type is allowed for ylabel.")
+
+    # initializing title
+    if title is None:
+        title = fr"Best $\lambda$ = {est.lambda_best_[0]:.2} with {len(np.nonzero(np.reshape(est.coef_, (1,-1)))[1])} Features"
+    elif isinstance(title, str):
+        title = title
+    else:
+        raise TypeError("Only string type is allowed for title.")
+
+    # plotting
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.errorbar(
+        -np.log(est.lambda_path_),
+        est.cv_mean_score_,
+        yerr=est.cv_standard_error_,
+        c=colors[0],
+        ecolor=colors[1],
+        marker=marker,
+        markersize=markersize,
+    )
+
+    ax.vlines(
+        -np.log(est.lambda_max_),
+        ymin=min(est.cv_mean_score_) - 0.05,
+        ymax=max(est.cv_mean_score_) + 0.05,
+        linewidth=linewidth,
+        linestyles=linestyle,
+        colors=colors[2],
+        label=r"max $\lambda$",
+    )
+
+    ax.vlines(
+        -np.log(est.lambda_best_),
+        ymin=min(est.cv_mean_score_) - 0.05,
+        ymax=max(est.cv_mean_score_) + 0.05,
+        linewidth=linewidth,
+        linestyles=linestyle,
+        colors=colors[3],
+        label=r"best $\lambda$",
+    )
+
+    ax.set_ylim([min(est.cv_mean_score_) - 0.05, max(est.cv_mean_score_) + 0.05])
+
+    if legend:
+        ax.legend(loc=legendloc, prop={"size": fontsize * 0.85}, framealpha=0.0)
+    ax.tick_params(axis="both", which="major", labelsize=fontsize * 0.75)
+    ax.set_xlabel(xlabel, fontsize=fontsize * 0.85)
+    ax.set_title(title, fontsize=fontsize)
+    ax.set_ylabel(ylabel, fontsize=fontsize * 0.85)
+    ax.grid(grid)
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)
+
     plt.show()
