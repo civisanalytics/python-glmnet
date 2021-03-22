@@ -318,7 +318,7 @@ def cv_score_plot(
     else:
         raise TypeError("Only bool type is allowed for grid.")
 
-    # initializing grid
+    # initializing legend
     if isinstance(legend, bool):
         legend = legend
     else:
