@@ -16,6 +16,7 @@ from glmnet.util import (_fix_lambda_path,
                          _check_user_lambda,
                          _interpolate_model,
                          _score_lambda_path)
+from glmnet.plotting import coeff_path_plot
 
 
 class LogitNet(BaseEstimator):
@@ -568,3 +569,82 @@ class LogitNet(BaseEstimator):
         """
         pred = self.predict(X, lamb=lamb)
         return np.apply_along_axis(accuracy_score, 0, pred, y)
+    
+    def plot_coeff_path(self, feature_names=None, figsize=(10, 6), linestyle="-", fontsize=18,
+                        legendloc="center", grid=True, legend=True, xlabel=None, ylabel=None, 
+                        title=None, yscale=None, bbox_to_anchor=None, save_path=None):
+        """Plot coefficient's paths vs -Log(lambda).
+
+        Parameters
+        ----------
+        est : estimator
+            The previously fitted estimator.
+
+        feature_names : list, shape (n_features,)
+            Input features names neede for legend.
+
+        figsize : tuple or list, as (width, height)
+            Figure size.
+
+        linestyle: string
+            Linestyle of coefficients' paths.
+
+        fontsize : int, float
+            Fontsize of the title. The fontsizes of xlabel, ylabel,
+            tick_params, and legend are resized with 0.85, 0.85, 0.75,
+            and 0.75 fraction of title fontsize, respectively.
+
+        legendloc: string
+            Legend location.
+
+        grid : bool
+            Whether to show (x,y) grid on the plot.
+
+        legend: bool
+            Whether to show legend on the plot.
+
+        xlabel : string or None
+            Xlabel of the plot.
+
+        ylabel : string or None
+            Ylabel of the plot.
+
+        title : string or None
+            Title of the plot.
+        
+        bbox_to_anchor: tuple, list or None
+            Relative coordinates for legend location outside of the plot.
+            
+        yscale: string or None
+            Scale for y-axis (coefficients). Valid options are
+            "linear", "log", "symlog", "logit". More on:
+            https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html            
+
+        save_path: string or None
+            The full or relative path to save the plot including the image format.
+            For example "myplot.png" or "../../myplot.pdf"
+
+        Returns None
+        """
+        coeff_path_plot(self,
+                        feature_names=feature_names,
+                        figsize=figsize,
+                        linestyle=linestyle,
+                        fontsize=fontsize,
+                        legendloc=legendloc,
+                        grid=grid,
+                        legend=legend,
+                        xlabel=xlabel,
+                        ylabel=ylabel,
+                        title=title,
+                        yscale=yscale,
+                        bbox_to_anchor=bbox_to_anchor,
+                        save_path=save_path
+                       )
+        return None
+
+                        
+                        
+                        
+                        
+                        
