@@ -169,6 +169,13 @@ def coeff_path_plot(
             label=feature_names[i],
         )
 
+    ax.tick_params(axis="both", which="major", labelsize=fontsize * 0.75)
+    ax.set_xlabel(xlabel, fontsize=fontsize * 0.85)
+    ax.set_title(title, fontsize=fontsize)
+    ax.set_ylabel(ylabel, fontsize=fontsize * 0.85)
+    ax.grid(grid)
+    ax.set_yscale(yscale)
+
     if legend:
         ax.legend(
             loc=legendloc,
@@ -178,14 +185,10 @@ def coeff_path_plot(
             framealpha=0.0,
             fancybox=True,
         )
-    ax.tick_params(axis="both", which="major", labelsize=fontsize * 0.75)
-    ax.set_xlabel(xlabel, fontsize=fontsize * 0.85)
-    ax.set_title(title, fontsize=fontsize)
-    ax.set_ylabel(ylabel, fontsize=fontsize * 0.85)
-    ax.grid(grid)
-    ax.set_yscale(yscale)
+
     if save_path:
         plt.savefig(save_path, bbox_inches="tight", dpi=200)
+
     plt.show()
 
 
@@ -239,9 +242,6 @@ def cv_score_plot(
         Fontsize of the title. The fontsizes of xlabel, ylabel,
         tick_params, and legend are resized with 0.85, 0.85, 0.75,
         and 0.85 fraction of title fontsize, respectively.
-
-    legendloc: string
-        Legend location.
 
     grid : bool
         Whether to show (x,y) grid on the plot.
@@ -308,9 +308,9 @@ def cv_score_plot(
 
     # initializing linewidth
     if isinstance(linewidth, int) or isinstance(linewidth, float):
-        linestyle = linestyle
+        linewidth = linewidth
     else:
-        raise TypeError("Only string type is allowed for linestyle.")
+        raise TypeError("Only string type is allowed for linewidth.")
 
     # initializing grid
     if isinstance(grid, bool):
@@ -334,8 +334,14 @@ def cv_score_plot(
 
     # initializing ylabel
     if ylabel is None:
-        ylabel = f"""{est.n_splits}-Folds CV Mean {' '.join((est.scoring).split("_")).upper()}"""
-    elif isinstance(xlabel, str):
+        if est.scoring is None:
+            if est.__module__ == "glmnet.linear":
+                ylabel = fr"""{est.n_splits}-Folds CV Mean $R^2$"""
+            elif est.__module__ == "glmnet.logistic":
+                ylabel = f"""{est.n_splits}-Folds CV Mean ACCURACY"""
+        else:
+            ylabel = f"""{est.n_splits}-Folds CV Mean {' '.join((est.scoring).split("_")).upper()}"""
+    elif isinstance(ylabel, str):
         ylabel = ylabel
     else:
         raise TypeError("Only string type is allowed for ylabel.")
@@ -350,6 +356,7 @@ def cv_score_plot(
 
     # plotting
     fig, ax = plt.subplots(figsize=figsize)
+
     ax.errorbar(
         -np.log(est.lambda_path_),
         est.cv_mean_score_,
@@ -381,14 +388,15 @@ def cv_score_plot(
     )
 
     ax.set_ylim([min(est.cv_mean_score_) - 0.05, max(est.cv_mean_score_) + 0.05])
-
-    if legend:
-        ax.legend(loc=legendloc, prop={"size": fontsize * 0.85}, framealpha=0.0)
     ax.tick_params(axis="both", which="major", labelsize=fontsize * 0.75)
     ax.set_xlabel(xlabel, fontsize=fontsize * 0.85)
     ax.set_title(title, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize * 0.85)
     ax.grid(grid)
+
+    if legend:
+        ax.legend(loc=legendloc, prop={"size": fontsize * 0.85}, framealpha=0.0)
+
     if save_path:
         plt.savefig(save_path, bbox_inches="tight", dpi=200)
 

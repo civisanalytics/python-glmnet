@@ -14,7 +14,7 @@ from glmnet.util import (_fix_lambda_path,
                          _check_user_lambda,
                          _interpolate_model,
                          _score_lambda_path)
-from glmnet.plotting import coeff_path_plot
+from glmnet.plotting import coeff_path_plot, cv_score_plot
 
 class ElasticNet(BaseEstimator):
     """Elastic Net with squared error loss.
@@ -450,15 +450,12 @@ class ElasticNet(BaseEstimator):
         return np.apply_along_axis(r2_reverse, 0, pred, y)
     
     def plot_coeff_path(self, feature_names=None, figsize=(10, 6), linestyle="-", fontsize=18,
-                        legendloc="center", grid=True, legend=True, xlabel=None, ylabel=None, 
+                        grid=True, legend=True, legendloc="center", xlabel=None, ylabel=None, 
                         title=None, yscale=None, bbox_to_anchor=None, save_path=None):
         """Plot coefficient's paths vs -Log(lambda).
 
         Parameters
         ----------
-        est : estimator
-            The previously fitted estimator.
-
         feature_names : list, shape (n_features,)
             Input features names neede for legend.
 
@@ -473,14 +470,14 @@ class ElasticNet(BaseEstimator):
             tick_params, and legend are resized with 0.85, 0.85, 0.75,
             and 0.75 fraction of title fontsize, respectively.
 
-        legendloc: string
-            Legend location.
-
         grid : bool
             Whether to show (x,y) grid on the plot.
 
         legend: bool
             Whether to show legend on the plot.
+
+        legendloc: string
+            Legend location.
 
         xlabel : string or None
             Xlabel of the plot.
@@ -490,14 +487,14 @@ class ElasticNet(BaseEstimator):
 
         title : string or None
             Title of the plot.
-        
-        bbox_to_anchor: tuple, list or None
-            Relative coordinates for legend location outside of the plot.
-            
+
         yscale: string or None
             Scale for y-axis (coefficients). Valid options are
             "linear", "log", "symlog", "logit". More on:
-            https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html            
+            https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html    
+        
+        bbox_to_anchor: tuple, list or None
+            Relative coordinates for legend location outside of the plot.        
 
         save_path: string or None
             The full or relative path to save the plot including the image format.
@@ -510,9 +507,9 @@ class ElasticNet(BaseEstimator):
                         figsize=figsize,
                         linestyle=linestyle,
                         fontsize=fontsize,
-                        legendloc=legendloc,
                         grid=grid,
                         legend=legend,
+                        legendloc=legendloc,
                         xlabel=xlabel,
                         ylabel=ylabel,
                         title=title,
@@ -522,8 +519,79 @@ class ElasticNet(BaseEstimator):
                        )
         return None
 
-                        
-                        
-                        
-                        
-                        
+    def plot_cv_score(self, figsize=(10, 6), linestyle="--", linewidth=3, colors=None,
+                      marker="o", markersize=5, fontsize=18, grid=True, legend=True,
+                      legendloc="best", xlabel=None, ylabel=None, title=None, save_path=None
+                     ):
+        """Plot n-folds cross-validation scores vs -Log(lambda).
+
+        Parameters
+        ----------
+        figsize : tuple or list, as (width, height)
+            Figure size.
+
+        linestyle: string
+            Linestyle of the vertical lamda lines.
+
+        linewidth: integer or float
+            Linewidth of the vertical lamda lines.
+
+        colors: list or tuple
+            Colors of the marker, errorbar line, max_lambda line,
+            and best_lambda line, respectively. The default colors
+            are ("red", "black", "cyan", "blue"). The length of the
+            passed tuple/list should be always four.
+
+        marker: str, optional, (default="o")
+            Marker style. More details on:
+            (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
+        markersize: intger or float
+            Markersize.
+
+        fontsize : int, float
+            Fontsize of the title. The fontsizes of xlabel, ylabel,
+            tick_params, and legend are resized with 0.85, 0.85, 0.75,
+            and 0.85 fraction of title fontsize, respectively.
+
+        grid : bool
+            Whether to show (x,y) grid on the plot.
+
+        legend: bool
+            Whether to show legend on the plot.
+
+        legendloc: string
+            Legend location.
+
+        xlabel : string or None
+            Xlabel of the plot.
+
+        ylabel : string or None
+            Ylabel of the plot.
+
+        title : string or None
+            Title of the plot.
+
+        save_path: string or None
+            The full or relative path to save the image including the image format.
+            For example "myplot.png" or "../../myplot.pdf"
+
+        Returns None
+        """
+        cv_score_plot(self,
+                      figsize=figsize,
+                      linestyle=linestyle,
+                      linewidth=linewidth,
+                      colors=colors,
+                      marker=marker,
+                      markersize=markersize,
+                      fontsize=fontsize,
+                      grid=grid,
+                      legend=legend,
+                      legendloc=legendloc,
+                      xlabel=xlabel,
+                      ylabel=ylabel,
+                      title=title,
+                      save_path=save_path)
+        
+        return None
