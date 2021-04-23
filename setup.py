@@ -32,7 +32,7 @@ def get_lib_dir(dylib):
     import subprocess
     from os.path import realpath, dirname
 
-    p = subprocess.Popen("gfortran -print-file-name={}".format(dylib),
+    p = subprocess.Popen("gfortran-10 -print-file-name={}".format(dylib),
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          shell=True)
     retcode = p.wait()
@@ -45,7 +45,7 @@ def get_lib_dir(dylib):
 
 
 if sys.platform == 'darwin':
-    GFORTRAN_LIB = get_lib_dir('libgfortran.3.dylib')
+    GFORTRAN_LIB = get_lib_dir('libgfortran.5.dylib')
     QUADMATH_LIB = get_lib_dir('libquadmath.0.dylib')
     ARGS = ["-Wl,-rpath,{}:{}".format(GFORTRAN_LIB, QUADMATH_LIB)]
     f_compile_args += ARGS
