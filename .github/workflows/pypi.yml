@@ -1,0 +1,70 @@
+# Copied from: https://github.com/joerick/cibuildwheel/blob/master/examples/github-deploy.yml
+name: Build and upload to PyPI
+on:
+  push:
+    branches:
+      - master
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Upload to PyPi'
+        required: false
+        default: 'false'
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-10.15, ubuntu-20.04]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        name: Install Python
+        with:
+          python-version: '3.8'
+      - name: Build wheels
+        uses: joerick/cibuildwheel@v1.10.0
+        env:
+          CIBW_BEFORE_ALL_LINUX: "apt-get update && apt-get install -y gcc gfortran"
+          CIBW_BEFORE_ALL_MACOS: "brew unlink gcc && brew link gcc" # gfortran and libs don't seem to be linked by default for some reason
+          # Use debian builders
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_24
+          # Skip extra linux cpu archs and pypy
+          CIBW_SKIP: "*_aarch64 *_i686 *_ppc64le *_s390x pp*"
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./wheelhouse/*.whl
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        name: Install Python
+        with:
+          python-version: '3.8'
+      - name: Build sdist
+        run: pip install build && python -m build --sdist
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
+  upload_pypi:
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload == 'true')
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: ${{ secrets.PYPI_API_USER }}
+          password: ${{ secrets.PYPI_API_PASSWORD }}
+          repository_url: ${{ secrets.PYPI_API_URL }}
