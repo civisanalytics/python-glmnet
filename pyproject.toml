@@ -1,0 +1,6 @@
+[project]
+requires-python = ">=3.6"
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["numpy==1.19.0", "setuptools", "wheel"]
