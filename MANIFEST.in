@@ -1,5 +1,6 @@
 include README.rst
 include LICENSE
 recursive-include LICENSES *
+include pyproject.toml
 include glmnet/*.pyf
 exclude glmnet/*.c
