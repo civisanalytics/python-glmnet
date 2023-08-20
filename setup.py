@@ -80,7 +80,7 @@ if __name__ == "__main__":
           python_requires=">=3.6.*",
           # We need pkg_resources, shipped with setuptools,
           # for version numbering.
-          setup_requires=["setuptools"],
+          setup_requires=["setuptools<=57.5.0"],
           ext_modules=[glmnet_lib],
           packages=['glmnet'],
           classifiers=[
