@@ -390,8 +390,10 @@ class ElasticNet(BaseEstimator):
 
         # drop last dimension (lambda path) when we are predicting for a
         # single value of lambda
-        if lamb.shape[0] == 1:
-            z = z.squeeze(axis=-1)
+        # FORK EDIT: when using lambda_path = [value] the shape already is sinle, 
+        # therefore no need to squeeze remove last axis since it only has 1 to begin with
+        # if lamb.shape[0] == 1:
+        #    z = z.squeeze(axis=-1)
         return z
 
     def predict(self, X, lamb=None):
