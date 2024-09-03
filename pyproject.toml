@@ -1,0 +1,14 @@
+[project]
+requires-python = ">=3.6"
+
+[build-system]
+build-backend = "setuptools.build_meta"
+# We need at least 1.19.0 for ABI compatibility, but otherwise prefer the oldest available wheel (eg: 1.19.3 for py3.9)
+requires = [
+    "numpy==1.19.0; python_version<'3.9'",
+    "numpy==1.19.3; python_version=='3.9'",
+    "numpy==1.22.4; python_version=='3.10'",
+    "numpy; python_version>'3.10'",
+    "setuptools",
+    "wheel"
+]
