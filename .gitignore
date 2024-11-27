@@ -6,3 +6,4 @@ build/
 _glmnetmodule.c
 dist
 MANIFEST
+.ipynb_checkpoints
